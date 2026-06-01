@@ -59,12 +59,11 @@ export default function Navbar({ pageLabel, isProjectPage = false }: NavbarProps
           priority
         />
         <Image
-          src="/assets/ste-logo.png"
+          src="/images/ste-logo.png"
           alt="Sté"
           width={40}
           height={40}
           className="logo logo-dark"
-          style={{ display: 'none' }}
           priority
         />
       </Link>
