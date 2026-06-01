@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scent Studio — Steven Heng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Fine"; src:url("../assets/fonts/GTUltraFine-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+
+  :root{
+    --bg:#fff; --bg-2:#fafafa; --ink:oklch(0.18 0.02 60); --ink-2:oklch(0.42 0.015 70);
+    --line:oklch(0.92 0.005 75); --grid:oklch(0.75 0.005 75);
+    --accent:#8B5E3C;
+    --display:"GT Planar",system-ui,sans-serif;
+    --serif:"GT Ultra Fine",serif;
+    --sans:"GT Ultra Median",system-ui,sans-serif;
+    --mono:"Geist Mono",ui-monospace,monospace;
+  }
+  html.dark{
+    --bg:#111110; --bg-2:#1c1b19;
+    --ink:oklch(0.91 0.01 75); --ink-2:oklch(0.55 0.012 70);
+    --line:oklch(0.27 0.008 70); --grid:oklch(0.34 0.006 70);
+    --accent:#D4956A;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html, body{ background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; min-height:100vh; }
+  body{ font-size:15px; line-height:1.5; position:relative; overflow-x:hidden; }
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size:18px 18px; opacity:.55;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);
+  }
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:var(--accent); color:#fff; }
+
+  /* ── HEADER ── */
+  .proj-header{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:50;
+    display:flex; align-items:center;
+    width:calc(100% - 48px); max-width:1200px;
+    padding:0 24px; height:56px;
+    border-radius:12px;
+    background: color-mix(in oklch, var(--bg) 82%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  }
+  .proj-header .ph-logo{ width:34px; height:34px; flex:none; display:grid; place-items:center; margin-right:24px; }
+  .proj-header .ph-logo img{ width:100%; height:auto; display:block; }
+  .proj-header nav{ display:flex; align-items:center; flex:1; }
+  .proj-header nav ol{ list-style:none; display:flex; gap:2px; }
+  .proj-header nav a{
+    display:block; padding:5px 11px; border-radius:3px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink-2); white-space:nowrap; transition:color .2s, background .2s;
+  }
+  .proj-header nav a:hover{ color:var(--accent); background:color-mix(in oklch, var(--accent) 12%, transparent); }
+  .proj-header .ph-right{
+    display:flex; align-items:center; gap:12px; margin-left:auto;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-2);
+  }
+  .mode-toggle{ display:flex; align-items:center; gap:7px; background:none; border:none; padding:0; cursor:pointer; font-family:var(--mono); font-size:9px; color:var(--ink-2); }
+  .mt-track{ width:28px; height:15px; border-radius:999px; border:1px solid var(--line); background:var(--bg-2); position:relative; flex:none; transition:background .35s,border-color .35s; }
+  .mt-knob{ width:9px; height:9px; border-radius:50%; background:var(--ink-2); position:absolute; top:2px; left:2px; transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s; }
+  html.dark .mt-track{ background:color-mix(in oklch, var(--accent) 14%, transparent); border-color:color-mix(in oklch, var(--accent) 40%, transparent); }
+  html.dark .mt-knob{ transform:translateX(13px); background:var(--accent); }
+  .ph-logo img.logo-dark{ display:none; }
+  html.dark .ph-logo img.logo-light{ display:none; }
+  html.dark .ph-logo img.logo-dark{ display:block; }
+  body{ padding-top:88px; }
+
+  /* ── PROGRESS COUNTER ── */
+  .scent-progress{
+    position:fixed; top:0; right:40px; height:60px;
+    display:flex; align-items:center; z-index:60;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--ink-2); pointer-events:none;
+  }
+
+  /* ── STAGE SYSTEM ── */
+  .stage{
+    display:none;
+    flex-direction:column; align-items:center; justify-content:center;
+    min-height:calc(100vh - 60px);
+    padding:4rem 2rem;
+    position:relative; z-index:1;
+  }
+  .stage.active{
+    display:flex;
+    animation:stageIn .5s cubic-bezier(.16,1,.3,1) both;
+  }
+  @keyframes stageIn{
+    from{ opacity:0; transform:translateY(14px); }
+    to{   opacity:1; transform:translateY(0); }
+  }
+
+  /* ── INVITATION ── */
+  .invitation{ text-align:center; max-width:560px; width:100%; }
+  .inv-eyebrow{
+    font-family:var(--mono); font-size:10px; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:32px;
+  }
+  .inv-heading{
+    font-family:var(--display); font-weight:400;
+    font-size:clamp(40px, 6vw, 72px);
+    line-height:1.0; letter-spacing:-0.03em; margin-bottom:24px;
+  }
+  .inv-heading em{ font-family:var(--serif); font-style:italic; font-weight:400; color:var(--accent); }
+  .inv-sub{
+    font-family:var(--sans); font-size:16px; line-height:1.55;
+    color:var(--ink-2); margin-bottom:48px;
+    max-width:40ch; margin-left:auto; margin-right:auto;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-primary{
+    font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--ink); background:transparent; border:1px solid var(--line);
+    border-radius:3px; padding:14px 36px; cursor:pointer;
+    transition:background .25s, color .25s, border-color .25s;
+  }
+  .btn-primary:hover{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  .btn-ghost{
+    font-family:var(--mono); font-size:10px; letter-spacing:0.15em; text-transform:uppercase;
+    color:var(--ink-2); background:none; border:none; padding:8px 16px; cursor:pointer;
+    transition:color .2s;
+  }
+  .btn-ghost:hover{ color:var(--ink); }
+
+  /* ── QUESTION ── */
+  .question{ text-align:center; max-width:760px; width:100%; }
+  .q-eyebrow{
+    font-family:var(--mono); font-size:10px; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--ink-2); margin-bottom:28px;
+  }
+  .q-title{
+    font-family:var(--display); font-weight:400;
+    font-size:clamp(28px, 4.5vw, 52px);
+    line-height:1.1; letter-spacing:-0.025em;
+    font-style:italic; margin-bottom:48px;
+  }
+
+  /* ── OPTIONS GRID ── */
+  .options{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; max-width:640px; margin:0 auto; width:100%; }
+  @media(max-width:540px){ .options{ grid-template-columns:1fr; } }
+  .option{
+    background:var(--bg-2); border:1px solid var(--line);
+    border-radius:4px; padding:28px 24px; text-align:left; cursor:pointer;
+    transition:border-color .25s, transform .25s cubic-bezier(.2,.8,.2,1), background .2s;
+    animation:stageIn .5s cubic-bezier(.16,1,.3,1) both;
+  }
+  .option:hover{ border-color:var(--accent); transform:translateY(-3px); background:var(--bg); }
+  .option-label{ font-family:var(--display); font-weight:400; font-size:20px; letter-spacing:-0.015em; margin-bottom:6px; color:var(--ink); }
+  .option-desc{ font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-2); }
+
+  /* ── BLENDING ── */
+  .blending{ text-align:center; }
+  .blending-label{
+    font-family:var(--mono); font-size:10px;
+    letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--ink-2); margin-bottom:24px;
+  }
+  .blending-dots{ display:flex; gap:8px; justify-content:center; }
+  .dot{ width:6px; height:6px; border-radius:50%; background:var(--accent); animation:blink 1.4s ease-in-out infinite; }
+  .dot:nth-child(2){ animation-delay:.2s; }
+  .dot:nth-child(3){ animation-delay:.4s; }
+  @keyframes blink{
+    0%,80%,100%{ opacity:.2; transform:scale(.8); }
+    40%{ opacity:1; transform:scale(1); }
+  }
+
+  /* ── REVEAL CARD ── */
+  .reveal{ max-width:520px; width:100%; }
+  .scent-card{ border:1px solid var(--line); border-radius:4px; background:var(--bg-2); padding:48px 44px; }
+  @media(max-width:600px){ .scent-card{ padding:32px 24px; } }
+  .card-eyebrow{ font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-bottom:20px; }
+  .card-name{
+    font-family:var(--serif); font-weight:400; font-style:italic;
+    font-size:clamp(28px,4vw,40px); line-height:1.1; letter-spacing:-0.01em;
+    color:var(--ink); margin-bottom:32px;
+  }
+  .note-divider{ border:none; border-top:1px solid var(--line); margin-bottom:24px; }
+  .notes{ display:flex; flex-direction:column; gap:18px; margin-bottom:28px; }
+  .note-row{ display:grid; grid-template-columns:72px 1fr; align-items:baseline; gap:16px; }
+  .note-label{ font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); }
+  .note-content{ font-family:var(--sans); font-size:14px; color:var(--ink); line-height:1.5; }
+  .card-tagline{
+    font-family:var(--serif); font-style:italic; font-size:15px; color:var(--ink-2);
+    border-top:1px solid var(--line); padding-top:20px; text-align:center;
+  }
+  .reveal-actions{ display:flex; justify-content:center; gap:8px; margin-top:24px; flex-wrap:wrap; }
+  .closing-hint{
+    margin-top:28px; text-align:center;
+    font-family:var(--mono); font-size:9px;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-2);
+  }
+</style>
+</head>
+<body>
+
+<header class="proj-header">
+  <a href="../Portfolio.html" class="ph-logo" aria-label="Back to portfolio">
+    <img class="logo-light" src="../assets/ste-logo.png" alt="Sté" />
+    <img class="logo-dark" src="../images/ste-logo.png" alt="Sté" />
+  </a>
+  <nav aria-label="Primary">
+    <ol>
+      <li><a href="../Portfolio.html#work">Work</a></li>
+      <li><a href="../Portfolio.html#about">About</a></li>
+      <li><a href="playground.html">Playground ↗</a></li>
+      <li><a href="#">Resume ↗</a></li>
+    </ol>
+  </nav>
+  <div class="ph-right">
+    <span>Scent Studio</span>
+    <button class="mode-toggle" id="modeBtn" aria-label="Toggle dark mode">
+      <span>☀</span>
+      <div class="mt-track"><div class="mt-knob"></div></div>
+      <span>☾</span>
+    </button>
+  </div>
+</header>
+
+<div class="scent-progress" id="progressEl">—</div>
+
+<!-- STAGE 1: INVITATION -->
+<section class="stage active" id="stage-invitation">
+  <div class="invitation">
+    <p class="inv-eyebrow">Scent Studio · Steven Heng</p>
+    <h1 class="inv-heading">Design a fragrance<br>from a memory<br>that isn't yours.</h1>
+    <p class="inv-sub">I'm a designer. I'm also, quietly, a perfumer — building a fragrance line, one scent at a time.<br><br>This is a small experiment from that work. Three questions. One fragrance. Yours to keep.</p>
+    <button class="btn-primary" onclick="goToQuestion(0)">Begin</button>
+  </div>
+</section>
+
+<!-- STAGE 2: QUESTION -->
+<section class="stage" id="stage-question">
+  <div class="question">
+    <p class="q-eyebrow" id="qNumber">Question 01 / 03</p>
+    <h2 class="q-title" id="qTitle"></h2>
+    <div class="options" id="qOptions"></div>
+  </div>
+</section>
+
+<!-- STAGE 3: BLENDING -->
+<section class="stage" id="stage-blending">
+  <div class="blending">
+    <p class="blending-label">Composing your fragrance</p>
+    <div class="blending-dots">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- STAGE 4: REVEAL -->
+<section class="stage" id="stage-reveal">
+  <div class="reveal">
+    <div class="scent-card">
+      <p class="card-eyebrow" id="rNumber">No. 07</p>
+      <h2 class="card-name" id="rName"></h2>
+      <hr class="note-divider">
+      <div class="notes">
+        <div class="note-row">
+          <span class="note-label">Top</span>
+          <span class="note-content" id="rTop"></span>
+        </div>
+        <div class="note-row">
+          <span class="note-label">Heart</span>
+          <span class="note-content" id="rHeart"></span>
+        </div>
+        <div class="note-row">
+          <span class="note-label">Base</span>
+          <span class="note-content" id="rBase"></span>
+        </div>
+      </div>
+      <p class="card-tagline" id="rTagline"></p>
+    </div>
+    <div class="reveal-actions">
+      <button class="btn-ghost" onclick="reset()">↺ &nbsp;Try another</button>
+      <button class="btn-ghost" onclick="goToQuestion(0)">← &nbsp;Start over</button>
+    </div>
+    <p class="closing-hint">Not what you remember. What you might have.</p>
+  </div>
+</section>
+
+<script>
+const questions = [
+  {
+    title: "When does this scent live?",
+    options: [
+      { label: "An hour that almost happened",  desc: "quiet, cool, beginning",       value: "morning"   },
+      { label: "A long afternoon, half-real",   desc: "warm, slow, sun-soaked",       value: "afternoon" },
+      { label: "The blue hour, in between",     desc: "fading, in-between, electric", value: "blue"      },
+      { label: "A late dark you're not sure of",desc: "still, deep, private",         value: "dark"      }
+    ]
+  },
+  {
+    title: "Pick a memory that isn't quite yours.",
+    options: [
+      { label: "A library you've only dreamt of",  desc: "paper, ozone, hush",        value: "library" },
+      { label: "A street you've walked in dreams", desc: "skin, warmth, streetlamps", value: "walking" },
+      { label: "A room someone just left",         desc: "trace, perfume, quiet",      value: "room"    },
+      { label: "A garden you almost remember",     desc: "green, damp earth, bloom",  value: "garden"  }
+    ]
+  },
+  {
+    title: "What should it leave behind?",
+    options: [
+      { label: "A trace, barely there", desc: "clean musk, soft cedar",  value: "trace"  },
+      { label: "Warmth on skin",        desc: "amber, tonka, vanilla",   value: "warmth" },
+      { label: "Something earthy",      desc: "vetiver, moss, dry wood", value: "earth"  },
+      { label: "A whisper of smoke",    desc: "incense, leather, oud",   value: "smoke"  }
+    ]
+  }
+];
+
+const topNotes = {
+  morning:   ["bergamot peel","white tea","cold air over water","pink grapefruit","yuzu zest","morning dew on stone","neroli bud","wet linen"],
+  afternoon: ["fig leaf","warm citron","sun on terracotta","sweet basil","ripe pear","honeysuckle","elderflower","candied bergamot"],
+  blue:      ["pink pepper","violet leaf","blue mandarin","cold iris","ozone after rain","lavender bud","silver mint","juniper berry"],
+  dark:      ["black currant bud","saffron thread","smoked cardamom","night-blooming jasmine","crushed pepperberry","burnt sugar","absinthe leaf","tobacco flower"]
+};
+const heartNotes = {
+  library: ["iris root","old vellum","soft pepper","dried fig","powdered violet","aged paper","tea-stained linen","indigo silk"],
+  walking: ["rose absolute","warm jasmine","skin musk","geranium leaf","honeyed magnolia","soft suede","cashmeran","petal-bruised peony"],
+  room:    ["powdered orris","white floral trace","lipstick wax","tuberose","ylang-ylang","champaca","heliotrope","the ghost of a perfume"],
+  garden:  ["damp moss","lily of the valley","green stem","wet petal","rain on hyacinth","young magnolia","narcissus","cut grass"]
+};
+const baseNotes = {
+  trace:  ["clean musk","soft cedar","white amber","pale sandalwood","blonde woods","cashmere musk","iris butter","powdered suede"],
+  warmth: ["amber resin","tonka bean","vanilla orchid","benzoin","honeyed labdanum","warm milk","cocoa absolute","soft praline"],
+  earth:  ["vetiver root","patchouli leaf","dry oakmoss","weathered wood","wet stone","black tea","guaiac wood","earth after rain"],
+  smoke:  ["frankincense","smoked leather","oud wood","ambered tobacco","birch tar","burnt cedar","myrrh resin","cold ash"]
+};
+const nameMap = {
+  // MORNING × LIBRARY
+  "morning-library-trace":  "A Library I've Only Read About",
+  "morning-library-warmth": "Tea I Don't Remember Drinking",
+  "morning-library-earth":  "A Page Turned in a Dream",
+  "morning-library-smoke":  "The Book That Wasn't Finished",
+  // MORNING × WALKING
+  "morning-walking-trace":  "First Light, Somewhere Else",
+  "morning-walking-warmth": "Walking Home in a City I've Never Lived",
+  "morning-walking-earth":  "A Street I Almost Recognize",
+  "morning-walking-smoke":  "The Morning After a Dream",
+  // MORNING × ROOM
+  "morning-room-trace":     "She Was There, or She Wasn't",
+  "morning-room-warmth":    "A Bed I'm Not Sure I Slept In",
+  "morning-room-earth":     "The Room I Wake Up In When I'm Dreaming",
+  "morning-room-smoke":     "A Goodbye That Hasn't Happened Yet",
+  // MORNING × GARDEN
+  "morning-garden-trace":   "The Garden I Never Visited",
+  "morning-garden-warmth":  "Honeysuckle in a Country I've Never Been To",
+  "morning-garden-earth":   "A Path I've Only Walked in Dreams",
+  "morning-garden-smoke":   "A Fire That May Not Have Been Lit",
+  // AFTERNOON × LIBRARY
+  "afternoon-library-trace":  "Sunlight on a Book I Haven't Opened",
+  "afternoon-library-warmth": "An Afternoon From Someone Else's Life",
+  "afternoon-library-earth":  "The Hours I Read in My Sleep",
+  "afternoon-library-smoke":  "A Story Half-Remembered",
+  // AFTERNOON × WALKING
+  "afternoon-walking-trace":  "The Long Way Back, Maybe",
+  "afternoon-walking-warmth": "A Summer I Might Have Had",
+  "afternoon-walking-earth":  "A Road I've Driven Only in Memory",
+  "afternoon-walking-smoke":  "A Café I Only Pass in Dreams",
+  // AFTERNOON × ROOM
+  "afternoon-room-trace":     "An Empty Chair I've Never Sat In",
+  "afternoon-room-warmth":    "A House I've Loved Without Living In",
+  "afternoon-room-earth":     "The Apartment I Almost Moved Into",
+  "afternoon-room-smoke":     "A Sunday I'm Not Sure I Lived",
+  // AFTERNOON × GARDEN
+  "afternoon-garden-trace":   "A Field I Walked Through Once, Maybe",
+  "afternoon-garden-warmth":  "Peaches From a Tree That Wasn't There",
+  "afternoon-garden-earth":   "The Greenhouse in the Recurring Dream",
+  "afternoon-garden-smoke":   "An Hour Before a Sundown I Imagined",
+  // BLUE HOUR × LIBRARY
+  "blue-library-trace":   "The Hour Between Pages",
+  "blue-library-warmth":  "A Chapter I Never Quite Finished",
+  "blue-library-earth":   "Twilight in a Library That Doesn't Exist",
+  "blue-library-smoke":   "Reading by a Candle I Imagined",
+  // BLUE HOUR × WALKING
+  "blue-walking-trace":   "Streetlamps in a City From a Dream",
+  "blue-walking-warmth":  "The Walk Toward a House I've Never Owned",
+  "blue-walking-earth":   "Pavement After a Rain That Didn't Fall",
+  "blue-walking-smoke":   "The Last Train Home, in a Different Life",
+  // BLUE HOUR × ROOM
+  "blue-room-trace":      "After a Door I Never Closed",
+  "blue-room-warmth":     "Lipstick on a Glass I Don't Remember Holding",
+  "blue-room-earth":      "A Chair Where Someone Used to Sit",
+  "blue-room-smoke":      "The Bar After a Last Call I Missed",
+  // BLUE HOUR × GARDEN
+  "blue-garden-trace":    "Dusk in a Hedge I Half-Remember",
+  "blue-garden-warmth":   "Honeysuckle From the Wrong Summer",
+  "blue-garden-earth":    "Wet Earth Under a Sky I've Never Seen",
+  "blue-garden-smoke":    "Smoke Above Roses That May Not Have Bloomed",
+  // LATE DARK × LIBRARY
+  "dark-library-trace":   "Reading by One Lamp, in Some Other Year",
+  "dark-library-warmth":  "Brandy in a Study I've Never Owned",
+  "dark-library-earth":   "A Midnight That Belongs to Someone Else",
+  "dark-library-smoke":   "Three A.M. in a Borrowed Memory",
+  // LATE DARK × WALKING
+  "dark-walking-trace":   "The Walk Nobody Saw",
+  "dark-walking-warmth":  "Coming Home to a House I'd Never Lived In",
+  "dark-walking-earth":   "An Empty Street From a Half-Forgotten Dream",
+  "dark-walking-smoke":   "A Long Way Home, on Purpose, in Another Life",
+  // LATE DARK × ROOM
+  "dark-room-trace":      "Perfume Without a Body",
+  "dark-room-warmth":     "Two Glasses, One I'm Not Sure I Poured",
+  "dark-room-earth":      "A Bed She'd Just Left, or Was Going To",
+  "dark-room-smoke":      "An Ashtray, a Letter I Never Read",
+  // LATE DARK × GARDEN
+  "dark-garden-trace":    "Midnight in a Garden That Might Be Mine",
+  "dark-garden-warmth":   "Honey-Heavy Dark, From a Country in a Dream",
+  "dark-garden-earth":    "The Hour the Garden Sleeps in My Head",
+  "dark-garden-smoke":    "Smoke and Jasmine, From Someone Else's Window"
+};
+const taglineMap = {
+  "library-trace":  "A fragrance from a quiet you've only imagined.",
+  "library-warmth": "A fragrance that reads in a language you almost know.",
+  "library-earth":  "A fragrance grounded in pages you haven't turned.",
+  "library-smoke":  "A fragrance for the chapter that wasn't written.",
+  "walking-trace":  "A fragrance from a way home you've never taken.",
+  "walking-warmth": "A fragrance that lingers on skin that isn't quite yours.",
+  "walking-earth":  "A fragrance that holds a road you've only dreamt.",
+  "walking-smoke":  "A fragrance that walks somewhere you've never been.",
+  "room-trace":     "A fragrance of someone who may not have been there.",
+  "room-warmth":    "A fragrance for a body that left a different room.",
+  "room-earth":     "A fragrance for what stays when no one was there.",
+  "room-smoke":     "A fragrance that doesn't leave a place you don't recall.",
+  "garden-trace":   "A fragrance from a green you can almost see.",
+  "garden-warmth":  "A fragrance that blooms in a season you missed.",
+  "garden-earth":   "A fragrance from somewhere you've never been.",
+  "garden-smoke":   "A fragrance with a little of someone else's danger in it."
+};
+
+let answers = [];
+let currentQuestion = 0;
+let scentNumber = String(Math.floor(Math.random() * 90) + 10).padStart(2, '0');
+
+function showStage(id) {
+  document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function setProgress(text) {
+  document.getElementById('progressEl').textContent = text;
+}
+
+function goToQuestion(idx) {
+  currentQuestion = idx;
+  const q = questions[idx];
+
+  document.getElementById('qNumber').textContent = `Question 0${idx + 1} / 03`;
+  document.getElementById('qTitle').textContent = q.title;
+  setProgress(`0${idx + 1} / 03`);
+
+  const optionsEl = document.getElementById('qOptions');
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.style.animationDelay = `${0.08 + i * 0.07}s`;
+    btn.innerHTML = `<div class="option-label">${opt.label}</div><div class="option-desc">${opt.desc}</div>`;
+    btn.onclick = () => selectOption(opt.value);
+    optionsEl.appendChild(btn);
+  });
+
+  showStage('stage-question');
+}
+
+function selectOption(value) {
+  answers[currentQuestion] = value;
+  if (currentQuestion < 2) {
+    goToQuestion(currentQuestion + 1);
+  } else {
+    showBlending();
+  }
+}
+
+function showBlending() {
+  setProgress('composing');
+  showStage('stage-blending');
+  setTimeout(showReveal, 2200);
+}
+
+function pick(arr, n) {
+  return [...arr].sort(() => Math.random() - 0.5).slice(0, n);
+}
+
+function showReveal() {
+  const [time, memory, base] = answers;
+  document.getElementById('rNumber').textContent  = `No. ${scentNumber}`;
+  document.getElementById('rName').textContent    = nameMap[`${time}-${memory}-${base}`] || 'An Unnamed Hour';
+  document.getElementById('rTop').textContent     = cap(pick(topNotes[time], 3).join(', '));
+  document.getElementById('rHeart').textContent   = cap(pick(heartNotes[memory], 3).join(', '));
+  document.getElementById('rBase').textContent    = cap(pick(baseNotes[base], 3).join(', '));
+  document.getElementById('rTagline').textContent = taglineMap[`${memory}-${base}`] || 'A fragrance that lingers.';
+  setProgress('your scent');
+  showStage('stage-reveal');
+}
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function reset() {
+  answers = [];
+  currentQuestion = 0;
+  scentNumber = String(Math.floor(Math.random() * 90) + 10).padStart(2, '0');
+  setProgress('—');
+  showStage('stage-invitation');
+}
+
+document.getElementById('modeBtn').addEventListener('click', () => {
+  const dark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+});
+</script>
+</body>
+</html>

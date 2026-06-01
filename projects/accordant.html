@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Accordant — Steven Heng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Thin.otf") format("opentype"); font-weight:200; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Light.otf") format("opentype"); font-weight:300; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Bold.otf") format("opentype"); font-weight:700; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Fine"; src:url("../assets/fonts/GTUltraFine-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+
+  :root{
+    --bg:#fff; --bg-2:#fafafa; --ink:oklch(0.18 0.02 60); --ink-2:oklch(0.42 0.015 70);
+    --line:oklch(0.92 0.005 75); --grid:oklch(0.75 0.005 75); --accent:#B62D07;
+    --display:"GT Planar",system-ui,sans-serif; --serif:"GT Ultra Fine",serif;
+    --sans:"Plus Jakarta Sans",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  }
+  html.dark{
+    --bg:#111110; --bg-2:#1c1b19;
+    --ink:oklch(0.91 0.01 75); --ink-2:oklch(0.55 0.012 70);
+    --line:oklch(0.27 0.008 70); --grid:oklch(0.34 0.006 70);
+    --accent:#E8502A;
+  }
+  /* project header */
+  .proj-header{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:50;
+    display:flex; align-items:center;
+    width:calc(100% - 48px); max-width:1200px;
+    padding:0 24px; height:56px;
+    border-radius:12px;
+    background: color-mix(in oklch, var(--bg) 82%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  }
+  .proj-header .ph-logo{ width:34px; height:34px; flex:none; display:grid; place-items:center; margin-right:24px; text-decoration:none; }
+  .proj-header .ph-logo img{ width:100%; height:auto; display:block; }
+  .proj-header nav{ display:flex; align-items:center; flex:1; }
+  .proj-header nav ol{ list-style:none; display:flex; gap:2px; }
+  .proj-header nav a{
+    display:block; padding:5px 11px; border-radius:3px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink-2); white-space:nowrap; transition:color .2s, background .2s; text-decoration:none;
+  }
+  .proj-header nav a:hover{ color:var(--accent); background:color-mix(in oklch, var(--accent) 12%, transparent); }
+  .proj-header .ph-right{
+    display:flex; align-items:center; gap:12px; margin-left:auto;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-2);
+  }
+  .mode-toggle{ display:flex; align-items:center; gap:7px; background:none; border:none; padding:0; cursor:pointer; font-family:var(--mono); font-size:9px; color:var(--ink-2); }
+  .mt-track{ width:28px; height:15px; border-radius:999px; border:1px solid var(--line); background:var(--bg-2); position:relative; flex:none; transition:background .35s,border-color .35s; }
+  .mt-knob{ width:9px; height:9px; border-radius:50%; background:var(--ink-2); position:absolute; top:2px; left:2px; transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s; }
+  html.dark .mt-track{ background:color-mix(in oklch, var(--accent) 14%, transparent); border-color:color-mix(in oklch, var(--accent) 40%, transparent); }
+  html.dark .mt-knob{ transform:translateX(13px); background:var(--accent); }
+  .ph-logo img.logo-dark{ display:none; }
+  html.dark .ph-logo img.logo-light{ display:none; }
+  html.dark .ph-logo img.logo-dark{ display:block; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{font-size:15px;line-height:1.5;position:relative}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size:18px 18px;opacity:.55;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+
+  .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:88px 56px 80px}
+
+  /* nav */
+  .topnav{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .topnav a{transition:color .25s}
+  .topnav a:hover{color:var(--accent)}
+  .topnav .crumb b{color:var(--ink);font-weight:400}
+
+  /* hero */
+  .hero{padding:64px 0 48px}
+  .meta-row{display:flex;gap:24px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:32px}
+  .meta-row .pill{padding:6px 12px;border:1px solid var(--line);border-radius:2px}
+  h1.title{font-family:var(--display);font-weight:500;font-size:clamp(48px,7vw,96px);line-height:.95;letter-spacing:-.035em}
+  h1.title em{font-family:var(--display);font-style:normal;font-weight:500;color:var(--ink)}
+  .lede{margin-top:24px;max-width:60ch;font-family:var(--display);font-weight:300;font-size:22px;line-height:1.4;letter-spacing:-.01em;color:var(--ink-2)}
+
+  /* hero canvas */
+  .hero-canvas{margin-top:48px;aspect-ratio:16/9;border-radius:4px;border:1px solid var(--line);
+    background:linear-gradient(180deg,#1a0805 0%,#5e1604 100%);
+    position:relative;overflow:hidden;color:#fff;padding:48px}
+  .hero-canvas::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px);
+    background-size:14px 14px;opacity:.4;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,transparent 100%);}
+  .hero-canvas .cap{position:relative;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+  .hero-canvas .word{position:relative;font-family:var(--display);font-weight:300;font-size:clamp(48px,8vw,120px);line-height:.95;letter-spacing:-.04em;margin-top:18px}
+  .hero-canvas .word em{font-family:var(--display);font-style:normal;font-weight:300;color:#fff}
+  .hero-canvas .chips{display:flex;gap:10px;margin-top:32px;flex-wrap:wrap}
+  .hero-canvas .chips span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    padding:8px 12px;border:1px solid rgba(255,255,255,.25);border-radius:2px;backdrop-filter:blur(8px)}
+  .hero-canvas .stamp{position:absolute;right:24px;top:24px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+
+  /* generic blocks */
+  /* how it works */
+  .context-card{margin-top:32px;border:1px solid var(--line);border-radius:4px;background:var(--bg);padding:40px;display:grid;grid-template-columns:1fr 1.4fr;gap:48px;align-items:start}
+  @media(max-width:900px){.context-card{grid-template-columns:1fr;gap:24px;padding:28px}}
+  .context-card .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  .context-card .nm{font-family:var(--display);font-weight:500;font-size:48px;letter-spacing:-.03em;line-height:.95}
+  .context-card .nm em{font-family:var(--display);font-style:normal;font-weight:500;color:var(--ink)}
+  .context-card .meta{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-top:8px}
+  .context-card .desc{font-family:var(--sans);font-size:15px;line-height:1.6;color:var(--ink-2);margin-bottom:18px;max-width:60ch}
+  .context-card ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+  .context-card li{font-family:var(--mono);font-size:13px;line-height:1.5;color:var(--ink);padding-left:18px;position:relative}
+  .context-card li::before{content:"→";position:absolute;left:0;color:var(--accent)}
+
+  .feat{margin-top:96px;background:var(--bg);overflow:hidden;display:grid;grid-template-columns:0.7fr 2fr;column-gap:48px;align-items:start}
+  .feat video{margin-top:36px;width:100%;display:block;border-radius:4px}
+  @media(max-width:900px){.feat{grid-template-columns:1fr}}
+  .feat .copy{padding:36px 36px 36px 0;display:flex;flex-direction:column;gap:14px}
+  .feat .copy .num{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .feat .copy h3{font-family:var(--display);font-weight:500;font-size:32px;letter-spacing:-.025em;line-height:1.05;margin:0}
+  .feat .copy h3 em{font-family:var(--display);font-style:normal;font-weight:500;color:var(--ink)}
+  .feat .copy p{font-family:var(--sans);font-size:15px;line-height:1.6;color:var(--ink-2)}
+  .feat .copy ul{list-style:none;padding:0;margin-top:6px;display:flex;flex-direction:column;gap:8px}
+  .feat .copy li{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--ink)}
+  .feat .ph{position:relative;background:var(--bg-2);min-height:360px;display:flex;align-items:center;justify-content:center;padding:32px;overflow:hidden}
+  @media(max-width:900px){.feat .ph{min-height:280px}}
+  .feat .ph::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(oklch(0.85 0.005 75) 1px,transparent 1px);background-size:14px 14px;opacity:.5;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent)}
+  .feat .ph .corners{position:absolute;inset:14px;pointer-events:none}
+  .feat .ph .corners span{position:absolute;width:14px;height:14px;border:1px solid var(--accent)}
+  .feat .ph .corners span:nth-child(1){top:0;left:0;border-right:none;border-bottom:none}
+  .feat .ph .corners span:nth-child(2){top:0;right:0;border-left:none;border-bottom:none}
+  .feat .ph .corners span:nth-child(3){bottom:0;left:0;border-right:none;border-top:none}
+  .feat .ph .corners span:nth-child(4){bottom:0;right:0;border-left:none;border-top:none}
+  .feat .ph .inner{position:relative;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+  .feat .ph .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .feat .ph .ttl{font-family:var(--display);font-weight:400;font-size:22px;letter-spacing:-.02em;color:var(--ink)}
+  .feat .ph .hint{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:5px 10px;border:1px dashed var(--line);border-radius:2px;background:var(--bg)}
+
+  /* prototype placeholder */
+  .proto-frame{margin-top:32px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);position:relative;overflow:hidden;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center}
+  .proto-frame::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(oklch(0.85 0.005 75) 1px,transparent 1px);background-size:14px 14px;opacity:.5;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent)}
+  .proto-frame .inner{position:relative;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center;padding:48px}
+  .proto-frame .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .proto-frame .ttl{font-family:var(--display);font-weight:400;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.025em;line-height:1.1;color:var(--ink)}
+  .proto-frame .ttl em{font-family:var(--display);font-style:normal;color:var(--ink)}
+  .proto-frame .sub{font-family:var(--sans);font-size:14px;color:var(--ink-2);max-width:46ch;line-height:1.55}
+  .proto-frame .corners{position:absolute;inset:14px;pointer-events:none}
+  .proto-frame .corners span{position:absolute;width:18px;height:18px;border:1px solid var(--accent)}
+  .proto-frame .corners span:nth-child(1){top:0;left:0;border-right:none;border-bottom:none}
+  .proto-frame .corners span:nth-child(2){top:0;right:0;border-left:none;border-bottom:none}
+  .proto-frame .corners span:nth-child(3){bottom:0;left:0;border-right:none;border-top:none}
+  .proto-frame .corners span:nth-child(4){bottom:0;right:0;border-left:none;border-top:none}
+  .proto-frame .embed-hint{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);padding:6px 12px;border:1px dashed var(--line);border-radius:2px;background:var(--bg)}
+
+  section{padding:96px 0}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h2{font-family:var(--display);font-weight:400;font-size:clamp(36px,4.5vw,46px);line-height:1.05;letter-spacing:-.03em;max-width:24ch}
+  h2 em{font-family:var(--display);font-style:normal;font-weight:400;color:var(--ink)}
+  h3{font-family:var(--display);font-weight:500;font-size:24px;line-height:1.15;letter-spacing:-.02em;margin-bottom:8px}
+  p{font-family:var(--sans);max-width:none;color:var(--ink-2);line-height:1.6;font-size:18px}
+  p + p{margin-top:14px}
+
+  .two-col{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:start;margin-top:32px}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;gap:32px}}
+
+  /* themes table */
+  .themes{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:32px}
+  @media(max-width:700px){.themes{grid-template-columns:1fr}}
+  .themes .row{background:var(--bg);padding:24px;display:flex;flex-direction:column;gap:8px;min-height:140px}
+  .themes .num{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent)}
+  .themes .ttl{font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.015em}
+  .themes .sub{font-family:var(--sans);font-size:13px;color:var(--ink-2)}
+  .themes .cnt{font-family:var(--mono);font-size:11px;color:var(--ink-2);margin-top:auto}
+
+  /* principles */
+  .principles{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:32px}
+  @media(max-width:900px){.principles{grid-template-columns:1fr 1fr}}
+  .principles .p{background:var(--bg);padding:24px;display:flex;flex-direction:column;gap:10px;min-height:200px}
+  .principles .p .n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent)}
+  .principles .p .t{font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.015em;line-height:1.2}
+  .principles .p .arr{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-2);margin-top:auto}
+
+  /* product surfaces */
+  .surfaces{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
+  @media(max-width:900px){.surfaces{grid-template-columns:1fr}}
+  .surface{border:1px solid var(--line);border-radius:4px;padding:32px;display:flex;flex-direction:column;gap:18px;background:var(--bg);position:relative;overflow:hidden}
+  .surface .label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .surface h3{font-family:var(--display);font-weight:500;font-size:30px;letter-spacing:-.02em}
+  .surface ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+  .surface li{font-family:var(--mono);font-size:13px;line-height:1.5;color:var(--ink);padding-left:18px;position:relative}
+  .surface li::before{content:"→";position:absolute;left:0;color:var(--accent)}
+  .surface .preview{margin-top:auto;aspect-ratio:16/10;border:1px solid var(--line);border-radius:2px;
+    background:linear-gradient(180deg,#fafafa 0%,#f0f0f0 100%);position:relative;overflow:hidden}
+
+  /* mock UI for browse surface */
+  .ui-mock{padding:14px;height:100%;display:flex;flex-direction:column;gap:10px;font-family:var(--mono);font-size:9px}
+  .ui-mock .tabs{display:flex;gap:8px;color:var(--ink-2)}
+  .ui-mock .tabs span{letter-spacing:.1em;text-transform:uppercase}
+  .ui-mock .tabs .on{color:var(--accent)}
+  .ui-mock .search{background:#fff;border:1px solid var(--line);border-radius:2px;padding:8px 10px;color:var(--ink);font-family:var(--mono);font-size:10px}
+  .ui-mock .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex:1}
+  .ui-mock .card{background:#fff;border:1px solid var(--line);border-radius:2px;padding:8px;display:flex;flex-direction:column;gap:4px}
+  .ui-mock .card .nm{font-family:var(--display);font-weight:500;font-size:11px;color:var(--ink);letter-spacing:-.01em}
+  .ui-mock .card .ds{font-size:8px;color:var(--ink-2);line-height:1.3}
+
+  /* plugin mock */
+  .plugin-mock{padding:14px;height:100%;display:flex;flex-direction:column;gap:8px;font-family:var(--mono);font-size:9px}
+  .plugin-mock .head{display:flex;justify-content:space-between;color:var(--ink-2);letter-spacing:.1em;text-transform:uppercase}
+  .plugin-mock .pin{background:#fff;border:1px solid var(--line);border-radius:2px;padding:8px;display:flex;flex-direction:column;gap:4px}
+  .plugin-mock .pin.on{border-color:var(--accent);background:color-mix(in oklch,var(--accent) 4%,#fff)}
+  .plugin-mock .pin .n{font-family:var(--display);font-weight:500;font-size:11px;color:var(--ink);letter-spacing:-.01em}
+  .plugin-mock .pin .reason{font-size:8px;color:var(--ink-2);line-height:1.3}
+  .plugin-mock .pin .badge{position:absolute;right:8px;top:8px;font-size:8px;color:var(--accent)}
+
+  /* IA flow */
+  .flow{display:flex;align-items:stretch;gap:0;margin-top:32px;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  @media(max-width:800px){.flow{flex-direction:column}}
+  .flow .step{flex:1;padding:24px;background:var(--bg);position:relative;display:flex;flex-direction:column;gap:8px}
+  .flow .step + .step{border-left:1px solid var(--line)}
+  @media(max-width:800px){.flow .step + .step{border-left:none;border-top:1px solid var(--line)}}
+  .flow .num{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.14em}
+  .flow .ttl{font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.015em}
+  .flow .ds{font-family:var(--sans);font-size:13px;color:var(--ink-2);line-height:1.5}
+
+  /* competitors */
+  .compete{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:32px}
+  .compete .c{background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:14px;min-height:240px;border-top:3px solid transparent}
+  .compete .c.me{background:color-mix(in oklch,var(--accent) 4%,var(--bg))}
+  .compete .c .c-logo{height:28px;width:auto;object-fit:contain;object-position:left;display:block}
+  .compete .c .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink-2);text-transform:uppercase}
+  .compete .c .nm{font-family:var(--display);font-weight:500;font-size:28px;letter-spacing:-.02em}
+  .compete .c.me .nm{color:var(--accent)}
+  .compete .c .row{font-family:var(--sans);font-size:15px;line-height:1.7}
+  .compete .c .row b{color:var(--ink);font-weight:400;display:block;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;font-size:11px;margin-bottom:3px}
+  .compete .c .row.s{color:var(--ink)}
+  .compete .c .row.g{color:var(--ink-2)}
+
+  /* tax diagram */
+  .tax{margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media(max-width:900px){.tax{grid-template-columns:1fr}}
+  .tax .col{border:1px solid var(--line);border-radius:4px;padding:24px;background:var(--bg)}
+  .tax .col h4{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:14px}
+  .tax .col.now h4{color:var(--ink-2)}
+  .tax .col.next h4{color:var(--accent)}
+  .tax .steps{display:flex;flex-wrap:wrap;gap:6px;font-family:var(--mono);font-size:11px}
+  .tax .steps span{padding:6px 10px;border:1px solid var(--line);border-radius:2px;background:#fff;color:var(--ink-2)}
+  .tax .col.next .steps span{border-color:color-mix(in oklch,var(--accent) 25%,var(--line));color:var(--ink)}
+  .tax .stat{font-family:var(--display);font-weight:500;font-size:32px;letter-spacing:-.025em;margin-top:16px}
+  .tax .col.next .stat{color:var(--accent)}
+
+  /* footer */
+  /* contact footer */
+  .contact{display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px;padding:80px 0 24px}
+  .contact h2{font-family:var(--display);font-weight:500;font-size:clamp(36px,5vw,72px);line-height:0.95;letter-spacing:-0.04em;color:var(--ink)}
+  .contact h2 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-0.025em}
+  .contact-note{margin-top:20px;font-family:var(--mono);font-size:11px;line-height:1.7;letter-spacing:0.02em;color:var(--ink-2);max-width:52ch}
+  .ascii-resume{display:block;flex:none;align-self:flex-end}
+  .ascii-resume-img{width:280px;height:auto;display:block;mix-blend-mode:multiply;opacity:0.75;transition:opacity .3s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
+  .ascii-resume:hover .ascii-resume-img{opacity:1;transform:scale(1.03)}
+  html.dark .ascii-resume-img{mix-blend-mode:normal;filter:invert(1);opacity:0.6}
+  html.dark .ascii-resume:hover .ascii-resume-img{opacity:0.85}
+
+  footer{padding:64px 0 0;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  footer a{color:var(--ink);transition:color .25s}
+  footer a:hover{color:var(--accent)}
+
+  .back{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:32px;transition:color .25s}
+  .back:hover{color:var(--accent)}
+  .back::before{content:"←"}
+</style>
+</head>
+<body>
+<header class="proj-header">
+  <a href="../Portfolio.html" class="ph-logo" aria-label="Back to portfolio">
+    <img class="logo-light" src="../assets/ste-logo.png" alt="Sté" />
+    <img class="logo-dark" src="../images/ste-logo.png" alt="Sté" />
+  </a>
+  <nav aria-label="Primary">
+    <ol>
+      <li><a href="../Portfolio.html#work">Work</a></li>
+      <li><a href="../Portfolio.html#about">About</a></li>
+      <li><a href="playground.html">Playground ↗</a></li>
+      <li><a href="#">Resume ↗</a></li>
+    </ol>
+  </nav>
+  <div class="ph-right">
+    <span>Accordant</span>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle dark mode">
+      <span>☀</span>
+      <div class="mt-track"><div class="mt-knob"></div></div>
+      <span>☾</span>
+    </button>
+  </div>
+</header>
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:none;padding-top:48px">
+    <a class="back" href="../Portfolio.html">Back to work</a>
+
+    <div class="meta-row">
+      <span class="pill">Passion project</span>
+      <span class="pill">Speculative product</span>
+      <span class="pill">UX case study</span>
+      <span class="pill">2026</span>
+    </div>
+
+    <h1 class="title">Accordant</h1>
+    <p class="lede">A platform that helps teams discover, compare, and confidently use design system components — through intent-based search, structured guidance, and direct integration with Figma.</p>
+
+    <img src="../images/accordant/accordant-title.png" alt="Accordant — Search, understand, compare, choose, insert" style="margin-top:48px;width:100%;display:block;border-radius:4px;" />
+  </section>
+
+  <!-- OVERVIEW -->
+  <section>
+    <div class="eyebrow">Overview</div>
+    <h2>A decision-support layer for design systems.</h2>
+    <div class="two-col" style="margin-top:32px">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <p>Accordant is a speculative product that sits between a design system and the designers who actually use it. It doesn't help author components or govern a library, it helps designers find the right component, understand it, and compare it against near-alternatives at the moment of choice.</p>
+        <p>The project spans concept, information architecture, and UI design, built around a fictional enterprise company called Stex with two active design systems.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Type</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Passion project · Speculative product</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Scope</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Concept · IA · UI design</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Surfaces</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Web platform · Figma plugin</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Year</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">2026</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section>
+    <div class="eyebrow">Why I made this</div>
+    <h2>Designers can <em>reach</em> the system. Understanding it is another story.</h2>
+    <div style="margin-top:32px;display:flex;flex-direction:column;gap:40px">
+      <div>
+        <h3>The moment</h3>
+        <p style="max-width:none">Most of the time, choosing the right component is automatic. Designers focus on the flow, the user's mental model, and edge cases — components fall into place from memory.</p>
+        <p style="max-width:none">But almost every designer hits moments where they need to <em>check</em>. And every check means leaving Figma, searching, reading, switching back, searching the library.</p>
+      </div>
+      <div>
+        <h3>The workflow tax</h3>
+        <p>The same act of checking guidance, repeated across a project, becomes a tax on flow. Multiplied across a team, it becomes a tax on the system itself.</p>
+
+        <div style="margin-top:32px;display:flex;flex-direction:column;gap:24px">
+
+          <!-- workflow 1 — today -->
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <img src="../images/accordant/accordant-workflow1.png" alt="Today: 9 steps across 2 windows" style="width:100%;border-radius:4px;" />
+            <span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)">9 steps, 2 windows</span>
+          </div>
+
+          <!-- workflow 2 — web platform (emphasized) -->
+          <div style="display:flex;flex-direction:column;gap:10px;max-width:85%;margin-top:48px">
+            <span style="font-family:var(--sans);font-size:18px;color:var(--ink-2)">With Accordant</span>
+            <img src="../images/accordant/accordant-worfklow2.png" alt="With Accordant web platform" style="width:100%;border-radius:4px;" />
+            <span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)">3 less steps, with comprehensive understanding</span>
+          </div>
+
+          <!-- workflow 3 — plugin (emphasized) -->
+          <div style="display:flex;flex-direction:column;gap:10px;max-width:59%">
+            <img src="../images/accordant/accordant-workflow3.png" alt="With Accordant plugin" style="width:100%;border-radius:4px;" />
+            <span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)">5 less steps</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+
+  <section>
+    <div class="eyebrow">The problem space</div>
+    <h2 style="max-width:none;white-space:nowrap">Access is not the same as <em>understanding.</em></h2>
+    <p style="margin-top:24px;font-size:18px;color:var(--ink)">Designers may have access to a Figma library and documentation site — yet still struggle to answer the simplest question of all: <em style="font-family:var(--display);color:var(--ink);font-style:normal;white-space:nowrap">which component should I use here?</em></p>
+    <p style="margin-top:14px">They fall back on memory, scattered docs, or team knowledge. The gap is not access — it's <strong style="color:var(--ink);font-weight:400">informed access.</strong></p>
+
+    <div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px">
+      <div>
+        <h3>Questions they can't easily answer</h3>
+        <img src="../images/accordant/accordant-questions.png" alt="Questions designers can't easily answer" style="margin-top:16px;width:100%;height:auto;display:block;border-radius:4px;" />
+      </div>
+      <div>
+        <h3>What erodes when choosing is unclear</h3>
+        <img src="../images/accordant/accordant-erodes.png" alt="What erodes when choosing is unclear" style="margin-top:16px;width:100%;height:auto;display:block;border-radius:4px;" />
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section>
+    <div class="eyebrow">Research</div>
+    <h2 style="white-space:nowrap">What designers <em>actually</em> struggle with.</h2>
+    <p style="margin-top:24px">I coded 14 practitioner accounts published 2023–2026 using inductive thematic coding (Braun &amp; Clarke). Eight recurring themes emerged.</p>
+
+    <div class="themes">
+      <div class="row"><span class="num">01</span><span class="ttl">Near-alternative confusion</span><span class="sub">Modal vs. Prompt vs. Popover</span><span class="cnt" style="display:none">6 / 14</span></div>
+      <div class="row"><span class="num">02</span><span class="ttl">Documentation hard to find</span><span class="sub">Or stale once they find it</span><span class="cnt" style="display:none">5 / 14</span></div>
+      <div class="row"><span class="num">03</span><span class="ttl">Components without limits</span><span class="sub">No "when not to use"</span><span class="cnt" style="display:none">5 / 14</span></div>
+      <div class="row"><span class="num">04</span><span class="ttl">Drift between Figma &amp; code</span><span class="sub">Library and prod desync</span><span class="cnt" style="display:none">5 / 14</span></div>
+      <div class="row"><span class="num">05</span><span class="ttl">Onboarding overload</span><span class="sub">Steep curve for new joiners</span><span class="cnt" style="display:none">4 / 14</span></div>
+      <div class="row"><span class="num">06</span><span class="ttl">Use case isn't covered</span><span class="sub">Bend, build custom, or wait</span><span class="cnt" style="display:none">4 / 14</span></div>
+      <div class="row"><span class="num">07</span><span class="ttl">DS team as bottleneck</span><span class="sub">Repeated questions, slow loop</span><span class="cnt" style="display:none">3 / 14</span></div>
+      <div class="row"><span class="num">08</span><span class="ttl">Built but unused</span><span class="sub">System exists, ignored</span><span class="cnt" style="display:none">3 / 14</span></div>
+    </div>
+
+    <h3 style="margin-top:48px">What we learned</h3>
+    <ul style="list-style:none;padding:0;margin-top:24px;display:flex;flex-direction:column;gap:16px;font-family:var(--sans);font-size:18px;color:var(--ink-2);line-height:1.6">
+      <li>— Designers think in tasks, not names. They search by intent, "display warning", and not "alert"</li>
+      <li>— Decisions live between near-alternatives</li>
+      <li>— Documentation needs "when not to use" as much as "when to use."</li>
+      <li>— If guidance isn't in Figma, designers won't reach for it</li>
+    </ul>
+  </section>
+
+  <!-- COMPETITIVE -->
+  <section>
+    <div class="eyebrow">Competitive landscape</div>
+    <h2 style="max-width:none">Most tools document and govern.<br>None help <em>decide</em> between near-alternatives at the moment of choice.</h2>
+
+    <div class="compete">
+      <div class="c" style="border-top-color:#1BC47D">
+        <span class="lbl">01 / default</span>
+        <span class="nm">Figma library</span>
+        <div class="row s"><b>Strength</b>Zero context switch — what designers already use.</div>
+        <div class="row g"><b>Gap</b>Name-based search only. No comparison, no usage rules.</div>
+      </div>
+      <div class="c" style="border-top-color:#5C50E8">
+        <span class="lbl">02 / docs</span>
+        <span class="nm">zeroheight</span>
+        <div class="row s"><b>Strength</b>Strong publishing. MCP + Assistant (2026).</div>
+        <div class="row g"><b>Gap</b>Read-first. AI returns text, not structured comparison.</div>
+      </div>
+      <div class="c" style="border-top-color:#FF5900">
+        <span class="lbl">03 / pivoted</span>
+        <span class="nm">Supernova</span>
+        <div class="row s"><b>Strength</b>Vibe coding &amp; PRD generation. Design-to-code.</div>
+        <div class="row g"><b>Gap</b>Pivoted away from decision support — different product now.</div>
+      </div>
+      <div class="c me" style="border-top-color:var(--accent)">
+        <span class="lbl">04 / decision-support</span>
+        <span class="nm">Accordant</span>
+        <div class="row s"><b>Strength</b>Intent search. Side-by-side comparison. Figma plugin.</div>
+        <div class="row g"><b>Position</b>Doesn't author or govern — extends, doesn't replace.</div>
+      </div>
+    </div>
+
+    <blockquote style="margin-top:32px;border-left:2px solid var(--accent);padding:4px 0 4px 24px">
+      <p style="font-family:var(--display);font-weight:300;font-size:clamp(20px,2.5vw,28px);line-height:1.35;letter-spacing:-.02em;color:var(--ink);max-width:52ch">Comparison is the missing primary view. Every platform sells to DS teams, but none is built for the <em style="font-family:var(--serif);font-style:italic;font-weight:400">consumer</em> of a design system.</p>
+    </blockquote>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section>
+    <div class="eyebrow">Design principles</div>
+    <h2>Decisions, not <em>preferences.</em></h2>
+
+    <div class="principles">
+      <div class="p"><span class="n">01</span><span class="t">Discovery should feel intuitive</span><span class="arr">→ Browse with intent search</span></div>
+      <div class="p"><span class="n">02</span><span class="t">Guidance appears before misuse</span><span class="arr">→ Component detail</span></div>
+      <div class="p"><span class="n">03</span><span class="t">Learning should be embedded</span><span class="arr">→ Onboarding paths</span></div>
+      <div class="p"><span class="n">04</span><span class="t">Comparison is first-class</span><span class="arr">→ Compare as a primary surface</span></div>
+      <div class="p"><span class="n">05</span><span class="t">Workflow matters</span><span class="arr">→ Figma plugin extension</span></div>
+    </div>
+  </section>
+
+  <!-- PRODUCT -->
+  <section>
+    <div class="eyebrow">The product</div>
+    <h2>One product, <em>two surfaces.</em></h2>
+    <p style="margin-top:24px">The browser supports depth, documentation, and onboarding. The plugin supports in-context action.</p>
+
+    <div class="surfaces">
+      <div class="surface">
+        <span class="label">A · Web platform — for depth</span>
+        <h3>Browse the full system</h3>
+        <ul>
+          <li>Compare related components</li>
+          <li>Learn principles &amp; onboarding</li>
+          <li>View detailed component guidance</li>
+        </ul>
+        <div class="preview" style="aspect-ratio:unset;background:none;border:none;padding:0">
+          <img src="../images/accordant/accordant-browse.png" alt="Accordant browse view" style="width:100%;display:block;border-radius:4px;" />
+        </div>
+      </div>
+
+      <div class="surface">
+        <span class="label">B · Figma plugin — for fast in-context action</span>
+        <h3>Search by intent inside Figma</h3>
+        <ul>
+          <li>See recommended components</li>
+          <li>View quick use-case guidance</li>
+          <li>Insert the best-fit component</li>
+        </ul>
+        <div class="preview" style="aspect-ratio:unset;background:var(--bg-2);border:1px solid var(--line);border-radius:4px;padding:24px;overflow:hidden">
+          <img src="../images/accordant/accordant-plugin-preview.png" alt="Accordant Figma plugin" style="width:100%;display:block;border-radius:4px;" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IA -->
+  <section>
+    <div class="eyebrow">Information architecture</div>
+    <h2>Four areas, <em>one</em> decision flow.</h2>
+    <div class="flow">
+      <div class="step"><span class="num">01</span><span class="ttl">Browse</span><span class="ds">Searchable library, filter by category and intent.</span></div>
+      <div class="step"><span class="num">02</span><span class="ttl">Compare</span><span class="ds">Side-by-side view of similar or confusable patterns.</span></div>
+      <div class="step"><span class="num">03</span><span class="ttl">Learn</span><span class="ds">Onboarding, principles, and curated learning paths.</span></div>
+      <div class="step"><span class="num">04</span><span class="ttl">Insights</span><span class="ds">Future: usage data and recommendation intelligence.</span></div>
+    </div>
+    <blockquote style="margin-top:32px;border-left:2px solid var(--accent);padding:4px 0 4px 24px">
+      <p style="font-family:var(--display);font-weight:300;font-size:clamp(20px,2.5vw,28px);line-height:1.35;letter-spacing:-.02em;color:var(--ink);max-width:52ch">Search → Understand → Compare → Choose → Insert</p>
+    </blockquote>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="eyebrow">How Accordant works</div>
+    <h2 style="max-width:none;white-space:nowrap">Two surfaces. <em>Four</em> areas. One decision flow.</h2>
+    <p style="margin-top:24px">The walkthrough below is set inside <em>Stex</em>, a fictional enterprise stack used as a working context for the prototype.</p>
+
+    <!-- CONTEXT: Stex -->
+    <div class="context-card" style="position:relative;overflow:hidden;display:flex;flex-direction:column;gap:28px">
+      <img src="../images/accordant/accordant-stex-components.png" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.24;pointer-events:none;" />
+      <!-- labels row -->
+      <div style="position:relative;display:flex;gap:16px;align-items:baseline">
+        <div class="lbl" style="margin-bottom:0">Context</div>
+        <div class="meta">Fictional Company</div>
+      </div>
+      <!-- image + bullets row -->
+      <div style="position:relative;display:grid;grid-template-columns:1fr 1.4fr;gap:48px;align-items:start">
+        <img src="../images/accordant/accordant-stex.png" alt="Stex" style="width:75%;border-radius:8px;display:block;" />
+        <ul style="font-size:18px">
+          <li>Multiple enterprise products in active development</li>
+          <li>Internal tools and customer-facing workflows</li>
+          <li>Two design systems: Enterprise and Mobile</li>
+          <li>A growing design team working across both</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- HOW IT GETS SET UP -->
+    <div style="margin-top:96px">
+      <div class="eyebrow">How it gets set up</div>
+      <h2 style="margin-top:14px;max-width:none">Two ways to get started.</h2>
+      <p style="margin-top:16px">Whether your design system is documented or just lived-in, Accordant meets you where you are.</p>
+
+      <div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div style="border:1px solid var(--line);border-radius:4px;padding:28px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Path A</span>
+          <h3 style="font-family:var(--display);font-weight:400;font-size:28px;letter-spacing:-.02em;margin:0">Connecting dots</h3>
+          <p style="font-family:var(--display);font-style:italic;font-size:15px;color:var(--ink-2);font-weight:300">For teams with existing documentation.</p>
+          <p style="font-family:var(--sans);font-size:15px;color:var(--ink-2);line-height:1.6">Connect Figma + your existing documentation. Accordant pulls components from Figma and structures your guidance against them.</p>
+        </div>
+        <div style="border:1px solid var(--line);border-radius:4px;padding:28px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Path B</span>
+          <h3 style="font-family:var(--display);font-weight:400;font-size:28px;letter-spacing:-.02em;margin:0">Generating drafts</h3>
+          <p style="font-family:var(--display);font-style:italic;font-size:15px;color:var(--ink-2);font-weight:300">For teams without formal documentation yet.</p>
+          <p style="font-family:var(--sans);font-size:15px;color:var(--ink-2);line-height:1.6">Connect Figma only. Accordant generates initial drafts of intent, usage, and comparisons — team refines from there.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;border:1px solid var(--accent);border-radius:4px;padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Both paths</span>
+        <h3 style="font-family:var(--display);font-weight:400;font-size:28px;letter-spacing:-.02em;margin:0;color:var(--ink)">Designers sign in to the plugin once.</h3>
+      </div>
+    </div>
+
+    <!-- 01 BROWSE -->
+    <div class="feat">
+      <div class="copy">
+        <span class="num">01 · Browse</span>
+        <h3>Search by <em>intent</em>, not just by name.</h3>
+        <p>A designer searching "display warning" should not need to know the word "alert" beforehand — and can learn the names after.</p>
+      </div>
+      <video src="../images/accordant/accordant-feature-01.mp4" autoplay muted loop playsinline style="width:100%;display:block;"></video>
+    </div>
+
+    <!-- 02 COMPONENT DETAIL / COMPARE -->
+    <div class="feat">
+      <div class="copy">
+        <span class="num">02 · Component detail</span>
+        <h3>Answer the questions designers <em>actually</em> ask.</h3>
+        <p>Each component opens to a structured page with core guidance for everyone, every time — and advanced guidance for deeper, contextual work.</p>
+      </div>
+      <video src="../images/accordant/accordant-feature-2.mp4" autoplay muted loop playsinline style="width:100%;display:block;"></video>
+    </div>
+
+    <!-- 03 COMPARE -->
+    <div class="feat">
+      <div class="copy">
+        <span class="num">03 · Compare</span>
+        <h3>Decisions live <em>between</em> near-alternatives.</h3>
+        <p>Comparison is treated as a primary surface, not a footnote. Place two confusable components side-by-side and see how their intent, behavior, and rules differ.</p>
+      </div>
+      <video src="../images/accordant/accordant-feature-03.mp4" autoplay muted loop playsinline style="width:100%;display:block;"></video>
+    </div>
+
+    <!-- 04 LEARN -->
+    <div class="feat">
+      <div class="copy">
+        <span class="num">04 · Learn</span>
+        <h3>Teach through <em>use</em>, not isolated documents.</h3>
+        <p>Onboarding paths, system principles, and curated learning sequences embedded in the same surface designers already use to choose components.</p>
+      </div>
+      <video src="../images/accordant/accordant-feature-04.mp4" autoplay muted loop playsinline style="width:100%;display:block;"></video>
+    </div>
+
+    <!-- 05 PLUGIN -->
+    <div class="feat">
+      <div class="copy">
+        <span class="num">05 · Figma plugin</span>
+        <h3>Guidance, <em>inside</em> the canvas.</h3>
+        <p>For fast in-context action: search by intent inside Figma, see recommended components ranked against your query, view quick use-case guidance, and insert the best-fit component without leaving the file.</p>
+      </div>
+      <video src="../images/accordant/accordant-plugin.mp4" autoplay muted loop playsinline style="width:100%;display:block;"></video>
+    </div>
+  </section>
+
+
+  <!-- REFLECTION -->
+  <section style="border-bottom:none">
+    <div class="eyebrow">Reflection</div>
+    <h2 style="max-width:none;white-space:nowrap">The <em>library</em> isn't the product. The decision is.</h2>
+    <div class="two-col">
+      <p>Designers don't lack access — they lack a structural surface for the decision they're already making. Accordant treats <em>comparison</em> as the primary view, not an afterthought, and meets the work where it actually happens: inside Figma.</p>
+      <p>If Figma libraries make components <em>accessible</em>, Accordant's job is to make them <em>understandable</em> — and to teach by use, not by document.</p>
+    </div>
+
+    <h3 style="margin-top:64px">Future step</h3>
+    <img src="../images/accordant/accordant-next-steps.png" alt="Future steps" style="margin-top:16px;width:100%;display:block;border-radius:4px;" />
+  </section>
+
+  <div class="contact">
+    <div>
+      <h2>bloom <em>where</em><br/>you're <em>planted!</em></h2>
+      <p class="contact-note"><strong>Sté is short for Steven</strong> — and it's a small wink at stay. It's the thread running through my work: design that invites people to stay engaged, art that holds attention, fragrances that linger long after the wearer leaves the room. Welcome. Sté with me a while.</p>
+    </div>
+    <a class="ascii-resume" href="#">
+      <img src="../assets/ascii-ste.png" alt="Sté — Resume" class="ascii-resume-img" />
+    </a>
+  </div>
+
+  <footer>
+    <div>® 2026 Steven Heng + iced americanos + Claude Code.</div>
+    <div>IN SEATTLE</div>
+  </footer>
+</div>
+<script>
+  (function(){
+    var html = document.documentElement;
+    document.getElementById('modeToggle').addEventListener('click', function(){
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Google — Steven Heng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Thin.otf") format("opentype"); font-weight:200; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Light.otf") format("opentype"); font-weight:300; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Fine"; src:url("../assets/fonts/GTUltraFine-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+
+  :root{
+    --bg:#fff; --bg-2:#fafafa; --ink:oklch(0.18 0.02 60); --ink-2:oklch(0.42 0.015 70);
+    --line:oklch(0.92 0.005 75); --grid:oklch(0.75 0.005 75); --accent:#E8630A;
+    --display:"GT Planar",system-ui,sans-serif; --serif:"GT Ultra Fine",serif;
+    --sans:"Plus Jakarta Sans",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  }
+  html.dark{
+    --bg:#111110; --bg-2:#1c1b19;
+    --ink:oklch(0.91 0.01 75); --ink-2:oklch(0.55 0.012 70);
+    --line:oklch(0.27 0.008 70); --grid:oklch(0.34 0.006 70);
+    --accent:#FF8A3D;
+  }
+  html.dark .cursor{ mix-blend-mode:normal; }
+  /* project header */
+  .proj-header{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:50;
+    display:flex; align-items:center;
+    width:calc(100% - 48px); max-width:1200px;
+    padding:0 24px; height:56px;
+    border-radius:12px;
+    background: color-mix(in oklch, var(--bg) 82%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  }
+  .proj-header .ph-logo{ width:34px; height:34px; flex:none; display:grid; place-items:center; margin-right:24px; text-decoration:none; }
+  .proj-header .ph-logo img{ width:100%; height:auto; display:block; }
+  .proj-header nav{ display:flex; align-items:center; flex:1; }
+  .proj-header nav ol{ list-style:none; display:flex; gap:2px; }
+  .proj-header nav a{
+    display:block; padding:5px 11px; border-radius:3px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink-2); white-space:nowrap; transition:color .2s, background .2s; text-decoration:none;
+  }
+  .proj-header nav a:hover{ color:var(--accent); background:color-mix(in oklch, var(--accent) 12%, transparent); }
+  .proj-header .ph-right{
+    display:flex; align-items:center; gap:12px; margin-left:auto;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-2);
+  }
+  .mode-toggle{ display:flex; align-items:center; gap:7px; background:none; border:none; padding:0; cursor:pointer; font-family:var(--mono); font-size:9px; color:var(--ink-2); }
+  .mt-track{ width:28px; height:15px; border-radius:999px; border:1px solid var(--line); background:var(--bg-2); position:relative; flex:none; transition:background .35s,border-color .35s; }
+  .mt-knob{ width:9px; height:9px; border-radius:50%; background:var(--ink-2); position:absolute; top:2px; left:2px; transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s; }
+  html.dark .mt-track{ background:color-mix(in oklch, var(--accent) 14%, transparent); border-color:color-mix(in oklch, var(--accent) 40%, transparent); }
+  html.dark .mt-knob{ transform:translateX(13px); background:var(--accent); }
+  .ph-logo img.logo-dark{ display:none; }
+  html.dark .ph-logo img.logo-light{ display:none; }
+  html.dark .ph-logo img.logo-dark{ display:block; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{font-size:15px;line-height:1.5;position:relative}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size:18px 18px;opacity:.55;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+
+  .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:88px 56px 80px}
+  .topnav{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .topnav a{transition:color .25s}
+  .topnav a:hover{color:var(--accent)}
+  .topnav .crumb b{color:var(--ink);font-weight:400}
+
+  .hero{padding:64px 0 48px}
+  .meta-row{display:flex;gap:24px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:32px;flex-wrap:wrap}
+  .meta-row .pill{padding:6px 12px;border:1px solid var(--line);border-radius:2px}
+  .meta-row .pill.live{border-color:var(--accent);color:var(--accent);position:relative;padding-left:24px}
+  .meta-row .pill.live::before{content:"";position:absolute;left:10px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 var(--accent);animation:pulse 1.6s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in oklch,var(--accent) 50%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+  h1.title{font-family:var(--display);font-weight:500;font-size:clamp(48px,7vw,96px);line-height:.95;letter-spacing:-.035em}
+  h1.title em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-.02em}
+  .lede{margin-top:24px;max-width:60ch;font-family:var(--display);font-weight:300;font-size:22px;line-height:1.4;letter-spacing:-.01em;color:var(--ink-2)}
+
+  .hero-canvas{margin-top:48px;aspect-ratio:16/9;border-radius:4px;border:1px solid var(--line);
+    background:linear-gradient(180deg,#04140d 0%,#0B5A3F 100%);
+    position:relative;overflow:hidden;color:#fff;padding:48px}
+  .hero-canvas::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px);
+    background-size:14px 14px;opacity:.4;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,transparent 100%);}
+  .hero-canvas .cap{position:relative;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+  .hero-canvas .word{position:relative;font-family:var(--display);font-weight:300;font-size:clamp(48px,8vw,120px);line-height:.95;letter-spacing:-.04em;margin-top:18px}
+  .hero-canvas .word em{font-family:var(--serif);font-style:italic;font-weight:400;color:#fff}
+  .hero-canvas .chips{display:flex;gap:10px;margin-top:32px;flex-wrap:wrap}
+  .hero-canvas .chips span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    padding:8px 12px;border:1px solid rgba(255,255,255,.25);border-radius:2px;backdrop-filter:blur(8px)}
+  .hero-canvas .stamp{position:absolute;right:24px;top:24px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+
+  section{padding:96px 0}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+  h2{font-family:var(--display);font-weight:400;font-size:clamp(36px,4.5vw,46px);line-height:1.05;letter-spacing:-.03em;max-width:24ch}
+  h2 em{font-family:var(--display);font-style:normal;font-weight:400;color:var(--accent);letter-spacing:-.03em}
+  p{font-family:var(--sans);font-size:18px;line-height:1.6;color:var(--ink-2);max-width:62ch}
+  p em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:32px}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;gap:24px}}
+
+  .quote{margin-top:32px;padding:32px 36px;border-left:3px solid var(--accent);background:var(--bg-2);border-radius:0 4px 4px 0}
+  .quote .q{font-family:var(--display);font-weight:300;font-size:28px;line-height:1.25;letter-spacing:-.02em;color:var(--ink)}
+  .quote .q em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+  .quote .src{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:32px}
+  @media(max-width:900px){.stat-grid{grid-template-columns:1fr}}
+  .stat{background:var(--bg);padding:32px;display:flex;flex-direction:column;gap:8px}
+  .stat .n{font-family:var(--display);font-weight:400;font-size:64px;letter-spacing:-.04em;line-height:1;color:var(--accent)}
+  .stat .n em{font-family:var(--serif);font-style:italic}
+  .stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+
+  .ph-block{margin-top:32px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);position:relative;overflow:hidden;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center}
+  .ph-block::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(oklch(0.85 0.005 75) 1px,transparent 1px);background-size:14px 14px;opacity:.5;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent)}
+  .ph-block .corners{position:absolute;inset:14px;pointer-events:none}
+  .ph-block .corners span{position:absolute;width:18px;height:18px;border:1px solid var(--accent)}
+  .ph-block .corners span:nth-child(1){top:0;left:0;border-right:none;border-bottom:none}
+  .ph-block .corners span:nth-child(2){top:0;right:0;border-left:none;border-bottom:none}
+  .ph-block .corners span:nth-child(3){bottom:0;left:0;border-right:none;border-top:none}
+  .ph-block .corners span:nth-child(4){bottom:0;right:0;border-left:none;border-top:none}
+  .ph-block .inner{position:relative;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;padding:32px}
+  .ph-block .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .ph-block .ttl{font-family:var(--display);font-weight:400;font-size:clamp(22px,3vw,32px);letter-spacing:-.025em;line-height:1.1;color:var(--ink)}
+  .ph-block .ttl em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+  .ph-block .hint{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:5px 10px;border:1px dashed var(--line);border-radius:2px;background:var(--bg)}
+
+  /* in-progress strip */
+  .ip-strip{margin-top:48px;border:1px dashed var(--accent);border-radius:4px;padding:24px 28px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:color-mix(in oklch, var(--accent) 5%, var(--bg))}
+  .ip-strip .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .ip-strip .msg{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:-.015em;color:var(--ink);max-width:62ch}
+  .ip-strip .msg em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+
+  /* contact footer */
+  .contact{display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px;padding:80px 0 24px}
+  .contact h2{font-family:var(--display);font-weight:500;font-size:clamp(36px,5vw,72px);line-height:0.95;letter-spacing:-0.04em;color:var(--ink)}
+  .contact h2 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-0.025em}
+  .contact-note{margin-top:20px;font-family:var(--mono);font-size:11px;line-height:1.7;letter-spacing:0.02em;color:var(--ink-2);max-width:52ch}
+  .ascii-resume{display:block;flex:none;align-self:flex-end}
+  .ascii-resume-img{width:280px;height:auto;display:block;mix-blend-mode:multiply;opacity:0.75;transition:opacity .3s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
+  .ascii-resume:hover .ascii-resume-img{opacity:1;transform:scale(1.03)}
+  html.dark .ascii-resume-img{mix-blend-mode:normal;filter:invert(1);opacity:0.6}
+  html.dark .ascii-resume:hover .ascii-resume-img{opacity:0.85}
+
+  footer{padding:48px 0 0;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);flex-wrap:wrap;gap:16px}
+  footer a{color:var(--ink);transition:color .25s}
+  footer a:hover{color:var(--accent)}
+
+  .zoomable{cursor:zoom-in;transition:opacity .2s}
+  .zoomable:hover{opacity:.88}
+  .lightbox{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    opacity:0;pointer-events:none;transition:opacity .25s}
+  .lightbox.open{opacity:1;pointer-events:auto}
+  .lightbox img{max-width:90vw;max-height:90vh;border-radius:4px;object-fit:contain;
+    transform:scale(.95);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+  .lightbox.open img{transform:scale(1)}
+  .lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;cursor:pointer;
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);
+    transition:color .2s}
+  .lightbox-close:hover{color:#fff}
+
+  .nda-wrap{position:relative;margin-top:32px;border-radius:4px;border:1px solid var(--line);overflow:hidden}
+  .nda-wrap img{width:100%;display:block}
+  .nda-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:transparent;opacity:0;transition:opacity .3s,background .3s;pointer-events:none}
+  .nda-wrap:hover .nda-overlay{opacity:1;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  .nda-overlay span{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:#fff;padding:9px 18px;border:1px solid rgba(255,255,255,.3);border-radius:3px}
+</style>
+</head>
+<body>
+<header class="proj-header">
+  <a href="../Portfolio.html" class="ph-logo" aria-label="Back to portfolio">
+    <img class="logo-light" src="../assets/ste-logo.png" alt="Sté" />
+    <img class="logo-dark" src="../images/ste-logo.png" alt="Sté" />
+  </a>
+  <nav aria-label="Primary">
+    <ol>
+      <li><a href="../Portfolio.html#work">Work</a></li>
+      <li><a href="../Portfolio.html#about">About</a></li>
+      <li><a href="playground.html">Playground ↗</a></li>
+      <li><a href="#">Resume ↗</a></li>
+    </ol>
+  </nav>
+  <div class="ph-right">
+    <span>Google</span>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle dark mode">
+      <span>☀</span>
+      <div class="mt-track"><div class="mt-knob"></div></div>
+      <span>☾</span>
+    </button>
+  </div>
+</header>
+<div class="wrap">
+
+  <section class="hero" style="border-top:none">
+    <div class="meta-row">
+      <span class="pill">Capstone · Google</span>
+      <span class="pill">Team · Ceteras</span>
+      <span class="pill">Role · Product Design + Research</span>
+      <span class="pill">Year · 2025–2026</span>
+    </div>
+
+    <h1 class="title">Google Android Security</h1>
+    <p class="lede">A capstone project with Google automating Android security patch porting — using LLMs and agentic workflows to cut patch deployment time by 83%, from 30 minutes to 5 minutes per vulnerability.</p>
+
+    <div class="nda-wrap" style="margin-top:48px">
+      <img src="../images/google/google-thumbnail-blurred.png" alt="Google Android Security — patch porting automation" />
+      <div class="nda-overlay"><span>Redacted for NDA</span></div>
+    </div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section>
+    <div class="eyebrow">Overview</div>
+    <h2>Automating Android security patch porting with LLMs.</h2>
+    <div class="two-col" style="margin-top:32px">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <p>Google Android Security is a capstone project developed in partnership with Google, addressing the time-intensive and error-prone process of backporting security patches across the Android ecosystem. The system uses LLMs and agentic workflows to automate what engineers previously resolved by hand.</p>
+        <p>Built by team Ceteras — Carolyn Chen, Enrico Pratama, Eugene Wongso, and Theophila Setiawan — through the UW iSchool capstone program.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Team</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink);display:flex;flex-direction:column;gap:4px">
+            <span>Carolyn Chen</span>
+            <span>Enrico Pratama</span>
+            <span>Eugene Wongso</span>
+            <span>Theophila Setiawan</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Partner</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Google × UW iSchool</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">My role</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Product Design · Research · Product Engineer</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Year</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">2025–2026</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section>
+    <div class="eyebrow">The problem</div>
+    <h2>Security patch backporting is slow, manual, and <em>inconsistent.</em></h2>
+    <div class="two-col" style="margin-top:32px">
+      <p>In the Android ecosystem, security patches developed upstream must be ported to dozens of downstream branches maintained by OEM partners. Tools like git cherry-pick handle simple cases, but many patches require manual resolution due to structural or API differences — a process that averages 30 minutes per vulnerability.</p>
+      <p>This manual effort slows patch deployment, increases the risk of inconsistent security coverage across devices, and places a heavy recurring burden on engineers across OEM partners at scale.</p>
+    </div>
+
+    <div class="stat-grid" style="margin-top:48px">
+      <div class="stat"><span class="n">30<em>min</em></span><span class="l">average time per patch, manually</span></div>
+      <div class="stat"><span class="n">128<em>×</em></span><span class="l">Android downstream versions tested</span></div>
+      <div class="stat"><span class="n">262</span><span class="l">merge conflicts evaluated</span></div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section>
+    <div class="eyebrow">Solution</div>
+    <h2>A four-stage automated <em>pipeline.</em></h2>
+    <p style="margin-top:24px">The pipeline ingests Vanir vulnerability reports and runs them through a sequential pipeline — parsing, applying, fixing, and validating — so engineers receive a ready-to-merge patch rather than a conflict to resolve by hand.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:48px">
+      <div style="background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">01</span>
+        <span style="font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.015em;color:var(--ink)">Vanir Parser</span>
+        <span style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.5">Parses Vanir reports into structured format for pipeline processing.</span>
+      </div>
+      <div style="background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">02</span>
+        <span style="font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.015em;color:var(--ink)">Patch Adopter</span>
+        <span style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.5">Applies upstream diffs to downstream Android codebases for all vulnerabilities.</span>
+      </div>
+      <div style="background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">03</span>
+        <span style="font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.015em;color:var(--ink)">LLM</span>
+        <span style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.5">Fixes failed patches using code context and iterative refinement with agentic workflows.</span>
+      </div>
+      <div style="background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">04</span>
+        <span style="font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.015em;color:var(--ink)">Validation</span>
+        <span style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.5">Checks patch correctness via automated build and test.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVALUATION -->
+  <section>
+    <div class="eyebrow">Evaluation</div>
+    <h2>Tested across <em>128</em> downstream versions.</h2>
+    <div class="two-col" style="margin-top:32px">
+      <div>
+        <p style="margin-bottom:24px">Evaluated against 262 merge conflicts using a multi-dimensional metrics suite to measure patch quality and similarity to ground-truth human-resolved patches.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px">
+          <li style="font-family:var(--sans);font-size:16px;color:var(--ink-2)"><strong style="color:var(--ink);font-weight:500">Length metrics</strong> — Characters, tokens, lines</li>
+          <li style="font-family:var(--sans);font-size:16px;color:var(--ink-2)"><strong style="color:var(--ink);font-weight:500">Edit distance</strong> — Token-level edit distance</li>
+          <li style="font-family:var(--sans);font-size:16px;color:var(--ink-2)"><strong style="color:var(--ink);font-weight:500">Similarity</strong> — Normalized edit similarity, cosine similarity, CodeBERT similarity</li>
+          <li style="font-family:var(--sans);font-size:16px;color:var(--ink-2)"><strong style="color:var(--ink);font-weight:500">Manual handcheck</strong> — Human verification of patch correctness</li>
+        </ul>
+      </div>
+      <div>
+        <div class="quote">
+          <div class="q">Reduced average patch-porting time from <em>~30 min to ~5 min</em> per vulnerability.</div>
+          <div class="src">Key result · ±83% efficiency gain</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUI WORKFLOW -->
+  <section>
+    <div class="eyebrow">Design process</div>
+    <h2>Translating workflow into <em>GUI.</em></h2>
+
+    <img src="../images/google/google-workflow.png" alt="10-stage patch-porting workflow diagram" class="zoomable" data-lightbox style="margin-top:32px;width:100%;display:block;border-radius:4px;border:1px solid var(--line);" />
+
+    <div class="two-col" style="margin-top:48px">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <p>Before designing any screens, I mapped the full workflow as ten distinct stages — from vulnerability ingestion through to patch validation. Laying them out sequentially made visible what the system was actually doing at each step, and where decisions were made by rules versus by the model.</p>
+        <p>Translating that into the GUI meant treating each stage as its own card in a stepper — scoped, legible, and unambiguous about what action, if any, the engineer needed to take.</p>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:16px">Step types</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2)">
+            <div style="width:10px;height:10px;border-radius:2px;background:oklch(0.52 0.13 240);flex:none;margin-top:3px"></div>
+            <div>
+              <div style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:4px">Deterministic</div>
+              <div style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.5">Rule-based steps with predictable, traceable outputs.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2)">
+            <div style="width:10px;height:10px;border-radius:2px;background:var(--accent);flex:none;margin-top:3px"></div>
+            <div>
+              <div style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:4px">AI-driven</div>
+              <div style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.5">Model-driven steps requiring reasoning over code context.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote" style="margin-top:40px">
+      <div class="q">Each card answered one question: what does the engineer need to know, and what do they need to be able to do, at this exact step?</div>
+    </div>
+  </section>
+
+  <!-- GUI DESIGN -->
+  <section>
+    <div class="eyebrow">The interface</div>
+    <h2>Three principles behind <em>every screen.</em></h2>
+
+    <div class="nda-wrap">
+      <img src="../images/google/google-gui.png" alt="GUI stepper interface for patch porting" />
+      <div class="nda-overlay"><span>Redacted for NDA</span></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:48px">
+      <div style="background:var(--bg);padding:28px 32px;display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">01</span>
+        <span style="font-family:var(--display);font-weight:500;font-size:22px;letter-spacing:-.02em;color:var(--ink)">Transparency</span>
+        <span style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.6">Each stage surfaced what the system was doing and why — the CVE being processed, conflict type detected, model selected, strategy applied. Nothing happened off-screen.</span>
+      </div>
+      <div style="background:var(--bg);padding:28px 32px;display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">02</span>
+        <span style="font-family:var(--display);font-weight:500;font-size:22px;letter-spacing:-.02em;color:var(--ink)">Familiar workflow</span>
+        <span style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.6">The stepper mirrored the mental model engineers already had for patch porting — a structured version of their existing process, not a new one to learn.</span>
+      </div>
+      <div style="background:var(--bg);padding:28px 32px;display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">03</span>
+        <span style="font-family:var(--display);font-weight:500;font-size:22px;letter-spacing:-.02em;color:var(--ink)">Always oriented</span>
+        <span style="font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.6">A progress indicator at each card showed the exact step (4 of 8, 5 of 8) with status colors and timing — so engineers always knew what had finished, what was running, and what was next.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- USABILITY TESTING -->
+  <section>
+    <div class="eyebrow">Usability testing</div>
+    <h2>Tested against three principles. <em>Then pivoted.</em></h2>
+
+    <div class="two-col" style="margin-top:32px">
+      <p>We ran usability testing sessions with Android security engineers, evaluating the GUI against the three design principles that guided every screen. The sessions confirmed what the design was doing right — and surfaced a more fundamental problem with the medium itself.</p>
+      <div class="quote">
+        <div class="q">The GUI checked every box. But engineers live in the terminal — and pulling them out of it created friction no interface could fix.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:48px;border:1px solid var(--line);border-radius:4px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:52px 180px 1fr;border-bottom:1px solid var(--line)">
+        <div style="padding:24px 16px;border-right:1px solid var(--line);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">01</div>
+        <div style="padding:24px;border-right:1px solid var(--line);font-family:var(--display);font-weight:500;font-size:17px;letter-spacing:-.015em;color:var(--ink);display:flex;align-items:flex-start">Transparency</div>
+        <div style="padding:24px;font-family:var(--sans);font-size:15px;color:var(--ink-2);line-height:1.6">Each stage exposed what the system was doing and why — the specific CVE being processed, the conflict type detected, the model selected, and the strategy applied. Nothing happened off-screen.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:52px 180px 1fr;border-bottom:1px solid var(--line)">
+        <div style="padding:24px 16px;border-right:1px solid var(--line);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">02</div>
+        <div style="padding:24px;border-right:1px solid var(--line);font-family:var(--display);font-weight:500;font-size:17px;letter-spacing:-.015em;color:var(--ink);display:flex;align-items:flex-start">Staying close</div>
+        <div style="padding:24px;font-family:var(--sans);font-size:15px;color:var(--ink-2);line-height:1.6">The stepper mirrored the mental model engineers already had for patch porting, so the tool felt like a structured version of their existing process rather than a new one to learn.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:52px 180px 1fr">
+        <div style="padding:24px 16px;border-right:1px solid var(--line);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">03</div>
+        <div style="padding:24px;border-right:1px solid var(--line);font-family:var(--display);font-weight:500;font-size:17px;letter-spacing:-.015em;color:var(--ink);display:flex;align-items:flex-start">Visualizing progress</div>
+        <div style="padding:24px;font-family:var(--sans);font-size:15px;color:var(--ink-2);line-height:1.6">A progress indicator at the top of each card showed exactly which step (4 of 8, 5 of 8) the system was on — with status colors and timing, so engineers always knew what had finished, what was running, and what was next.</div>
+      </div>
+    </div>
+
+    <div class="ip-strip" style="margin-top:40px">
+      <div>
+        <div class="lbl" style="margin-bottom:10px">The pivot</div>
+        <div class="msg">Engineers who tested the tool lived in their terminal — switching into a GUI interrupted that flow, no matter how well-designed. We rebuilt the interface as a CLI, and the tool finally felt like it belonged in their workflow.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFLECTION -->
+  <section>
+    <div class="eyebrow">Reflection</div>
+    <h2>Good design is meeting people inside the workflows <em>they already trust.</em></h2>
+    <div style="margin-top:32px;display:flex;flex-direction:column;gap:24px">
+      <p>When I first took this role, I was genuinely excited because this would be the first time I'd work on the technical side of a project. I got to explore LLM prompting, feed context into the model to shape desired outputs for our AI tooling, and contribute to designing our evaluation metrics. Working closely with the same technology I'd been using every day, but now from the inside, was fascinating.</p>
+      <p>Early on, I designed a graphical user interface for our end users (Android security engineers), assuming a visual tool would make patch porting more approachable. But after gathering feedback, we pivoted to a command-line interface, because that was the environment they already lived in. Learning to build a CLI was a technical lift, but the bigger lesson was about design itself: <span style="background:color-mix(in oklch,var(--accent) 18%,transparent);padding:1px 4px;border-radius:3px">good design isn't about introducing something better in the abstract; it's about meeting people inside the workflows they already trust.</span> A polished GUI that pulls an engineer out of their terminal creates friction, no matter how well-crafted it looks.</p>
+      <p>This reframed how I think about AI tooling more broadly. When the underlying system is a black box, like an LLM making patch decisions, familiarity in the surrounding interface becomes a form of transparency. Engineers could read our tool's output, trace its reasoning, and intervene in the same environment where they'd normally review a diff. The CLI didn't just match their habits; it made the AI feel legible, like another tool in their pipeline rather than a separate system asking for their trust.</p>
+    </div>
+  </section>
+
+  <!-- NEXT STEPS -->
+  <section style="border-bottom:none">
+    <div class="eyebrow">What's next</div>
+    <h2>Research paper, further development, <em>open sourcing.</em></h2>
+    <div class="two-col" style="margin-top:32px">
+      <p>The team is working toward publishing a research paper on the approach and results, continuing development of the pipeline, and open sourcing the tool so the broader Android security community can build on it.</p>
+      <p>For me, this project deepened my understanding of where design sits in systems-level engineering work — how to contribute meaningfully to a technically complex product without losing sight of the human judgment that still matters at each step.</p>
+    </div>
+  </section>
+
+  <div class="contact">
+    <div>
+      <h2>bloom <em>where</em><br/>you're <em>planted!</em></h2>
+      <p class="contact-note"><strong>Sté is short for Steven</strong> — and it's a small wink at stay. It's the thread running through my work: design that invites people to stay engaged, art that holds attention, fragrances that linger long after the wearer leaves the room. Welcome. Sté with me a while.</p>
+    </div>
+    <a class="ascii-resume" href="#">
+      <img src="../assets/ascii-ste.png" alt="Sté — Resume" class="ascii-resume-img" />
+    </a>
+  </div>
+
+  <footer>
+    <div>® 2026 Steven Heng + iced americanos + Claude Code.</div>
+    <div>IN SEATTLE</div>
+  </footer>
+</div>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <button class="lightbox-close" id="lightboxClose">Close ✕</button>
+  <img id="lightboxImg" src="" alt="" />
+</div>
+
+<script>
+  (function(){
+    var html = document.documentElement;
+    document.getElementById('modeToggle').addEventListener('click', function(){
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    var lb = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lightboxImg');
+
+    document.querySelectorAll('[data-lightbox]').forEach(function(img){
+      img.addEventListener('click', function(){
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox(){
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+    lb.addEventListener('click', function(e){ if(e.target === lb) closeLightbox(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLightbox(); });
+  })();
+</script>
+</body>
+</html>

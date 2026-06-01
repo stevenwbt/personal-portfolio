@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Playground — Steven Heng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Thin.otf") format("opentype"); font-weight:200; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Light.otf") format("opentype"); font-weight:300; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Bold.otf") format("opentype"); font-weight:700; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Fine"; src:url("../assets/fonts/GTUltraFine-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+
+  :root{
+    --bg:#fff; --bg-2:#fafafa; --ink:oklch(0.18 0.02 60); --ink-2:oklch(0.42 0.015 70);
+    --line:oklch(0.92 0.005 75); --grid:oklch(0.88 0.005 75); --accent:#002FA7;
+    --accent-soft: color-mix(in oklch, #002FA7 14%, transparent);
+    --display:"GT Planar",system-ui,sans-serif; --serif:"GT Ultra Fine",serif;
+    --sans:"GT Ultra Median",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  }
+  html.dark{
+    --bg:#111110; --bg-2:#1c1b19;
+    --ink:oklch(0.91 0.01 75); --ink-2:oklch(0.55 0.012 70);
+    --line:oklch(0.27 0.008 70); --grid:oklch(0.34 0.006 70);
+    --accent:#3D5FD9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{font-size:15px;line-height:1.5;position:relative}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size:18px 18px;opacity:.7;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+
+  .proj-header{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:50;
+    display:flex; align-items:center;
+    width:calc(100% - 48px); max-width:1200px;
+    padding:0 24px; height:56px;
+    border-radius:12px;
+    background: color-mix(in oklch, var(--bg) 82%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  }
+  .proj-header .ph-logo{ width:34px; height:34px; flex:none; display:flex; align-items:center; justify-content:center; margin-right:24px; text-decoration:none; }
+  .proj-header .ph-logo img{ width:100%; height:auto; display:block; }
+  .proj-header nav{ display:flex; align-items:center; flex:1; }
+  .proj-header nav ol{ list-style:none; display:flex; gap:2px; }
+  .proj-header nav a{
+    display:block; padding:5px 11px; border-radius:3px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink-2); white-space:nowrap; transition:color .2s, background .2s; text-decoration:none;
+  }
+  .proj-header nav a:hover{ color:var(--accent); background:color-mix(in oklch, var(--accent) 12%, transparent); }
+  .proj-header .ph-right{
+    display:flex; align-items:center; gap:12px; margin-left:auto;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-2);
+  }
+  .mode-toggle{ display:flex; align-items:center; gap:7px; background:none; border:none; padding:0; cursor:pointer; font-family:var(--mono); font-size:9px; color:var(--ink-2); }
+  .mt-track{ width:28px; height:15px; border-radius:999px; border:1px solid var(--line); background:var(--bg-2); position:relative; flex:none; transition:background .35s,border-color .35s; }
+  .mt-knob{ width:9px; height:9px; border-radius:50%; background:var(--ink-2); position:absolute; top:2px; left:2px; transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s; }
+  html.dark .mt-track{ background:color-mix(in oklch, var(--accent) 14%, transparent); border-color:color-mix(in oklch, var(--accent) 40%, transparent); }
+  html.dark .mt-knob{ transform:translateX(13px); background:var(--accent); }
+
+  .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:88px 40px 80px}
+
+  .topnav{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .topnav a{transition:color .25s}
+  .topnav a:hover{color:var(--accent)}
+  .topnav .crumb b{color:var(--ink);font-weight:400}
+
+  .back{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin:32px 0;transition:color .25s}
+  .back:hover{color:var(--accent)}
+  .back::before{content:"←"}
+
+  .hero{padding:48px 0 56px;border-bottom:1px solid var(--line)}
+  h1.title{font-family:var(--display);font-weight:500;font-size:clamp(56px,8vw,120px);line-height:.95;letter-spacing:-.04em}
+  h1.title em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-.02em}
+  .lede{margin-top:24px;max-width:60ch;font-family:var(--display);font-weight:300;font-size:22px;line-height:1.4;letter-spacing:-.01em;color:var(--ink-2)}
+
+  section{padding:64px 0;border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  .row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .row .nm{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+  .row .ct{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--accent)}
+
+  .pg-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px}
+  @media(max-width:1100px){.pg-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:700px){.pg-grid{grid-template-columns:1fr}}
+  .pg-card{position:relative;border:1px solid var(--line);border-radius:4px;background:var(--bg);overflow:hidden;display:flex;flex-direction:column;min-height:360px;transition:transform .35s cubic-bezier(.2,.8,.2,1), border-color .25s}
+  .pg-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+  .pg-card.tall{grid-row:span 2;min-height:736px}
+  @media(max-width:1100px){.pg-card.tall{grid-row:auto;min-height:360px}}
+  .pg-card .ph{flex:1;position:relative;background:var(--bg-2);display:flex;align-items:center;justify-content:center;padding:28px}
+  .pg-card .ph::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(oklch(0.85 0.005 75) 1px,transparent 1px);background-size:14px 14px;opacity:.5;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent)}
+  .pg-card .ph .corners{position:absolute;inset:14px;pointer-events:none}
+  .pg-card .ph .corners span{position:absolute;width:14px;height:14px;border:1px solid var(--accent)}
+  .pg-card .ph .corners span:nth-child(1){top:0;left:0;border-right:none;border-bottom:none}
+  .pg-card .ph .corners span:nth-child(2){top:0;right:0;border-left:none;border-bottom:none}
+  .pg-card .ph .corners span:nth-child(3){bottom:0;left:0;border-right:none;border-top:none}
+  .pg-card .ph .corners span:nth-child(4){bottom:0;right:0;border-left:none;border-top:none}
+  .pg-card .ph .inner{position:relative;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+  .pg-card .ph .inner .lbl{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .pg-card .ph .inner .ttl{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:-.018em;color:var(--ink)}
+  .pg-card .ph .inner .hint{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:4px 8px;border:1px dashed var(--line);border-radius:2px;background:var(--bg)}
+  .pg-card .body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line)}
+  .pg-card .body .tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .pg-card .body h3{font-family:var(--display);font-weight:500;font-size:22px;letter-spacing:-.02em;line-height:1.1;color:var(--ink)}
+  .pg-card .body h3 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+  .pg-card .body p{font-family:var(--sans);font-size:13px;line-height:1.55;color:var(--ink-2)}
+  .pg-card .body .notes{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .pg-card .body .notes span{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);padding:4px 8px;border:1px solid var(--line);border-radius:999px}
+
+  /* contact footer */
+  .contact{display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px;padding:80px 0 24px}
+  .contact h2{font-family:var(--display);font-weight:500;font-size:clamp(36px,5vw,72px);line-height:0.95;letter-spacing:-0.04em;color:var(--ink)}
+  .contact h2 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-0.025em}
+  .contact-note{margin-top:20px;font-family:var(--mono);font-size:11px;line-height:1.7;letter-spacing:0.02em;color:var(--ink-2);max-width:52ch}
+  .ascii-resume{display:block;flex:none;align-self:flex-end}
+  .ascii-resume-img{width:280px;height:auto;display:block;mix-blend-mode:multiply;opacity:0.75;transition:opacity .3s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
+  .ascii-resume:hover .ascii-resume-img{opacity:1;transform:scale(1.03)}
+  html.dark .ascii-resume-img{mix-blend-mode:normal;filter:invert(1);opacity:0.6}
+  html.dark .ascii-resume:hover .ascii-resume-img{opacity:0.85}
+
+  footer{padding:48px 0 0;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);flex-wrap:wrap;gap:16px}
+  footer a{color:var(--ink);transition:color .25s}
+  footer a:hover{color:var(--accent)}
+
+  .zoomable{cursor:zoom-in;transition:opacity .2s;display:block}
+  .zoomable:hover{opacity:.85}
+  .video-zoomable{cursor:zoom-in}
+  .video-zoomable:hover video{opacity:.85}
+  .video-zoomable video{transition:opacity .2s}
+  .pg-caption{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:10px 12px;border-top:1px solid var(--line)}
+  .pg-wip{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
+  .pg-wip span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.35);padding:7px 14px;border-radius:2px}
+
+  .lightbox{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    opacity:0;pointer-events:none;transition:opacity .25s}
+  .lightbox.open{opacity:1;pointer-events:auto}
+  .lightbox img,.lightbox video{max-width:90vw;max-height:90vh;border-radius:4px;object-fit:contain;
+    transform:scale(.95);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+  .lightbox.open img,.lightbox.open video{transform:scale(1)}
+  .lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;cursor:pointer;
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);transition:color .2s}
+  .lightbox-close:hover{color:#fff}
+</style>
+</head>
+<body>
+<header class="proj-header">
+  <a href="../Portfolio.html" class="ph-logo" aria-label="Back to portfolio">
+    <img id="pgLogo" src="../assets/ste-logo.png" alt="Sté" />
+  </a>
+  <nav aria-label="Primary">
+    <ol>
+      <li><a href="../Portfolio.html#work">Work</a></li>
+      <li><a href="../Portfolio.html#about">About</a></li>
+      <li><a href="playground.html">Playground ↗</a></li>
+      <li><a href="#">Resume ↗</a></li>
+    </ol>
+  </nav>
+  <div class="ph-right">
+    <span>Playground</span>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle dark mode">
+      <span>☀</span>
+      <div class="mt-track"><div class="mt-knob"></div></div>
+      <span>☾</span>
+    </button>
+  </div>
+</header>
+<div class="wrap">
+
+  <section class="hero" style="border-top:none;padding-top:8px">
+    <h1 class="title"><em>Playground.</em></h1>
+    <p class="lede">Where the work loosens up. A fragrance line I'm building by hand, and a collection of graphic design. Different mediums — same instinct.</p>
+  </section>
+
+  <!-- Fragrances -->
+  <!-- Graphic design -->
+  <section>
+    <div class="row"><span class="nm">· Graphic design</span><span class="ct">Selected pieces</span></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:start">
+
+      <div class="pg-card" style="min-height:unset">
+        <div class="video-zoomable" data-src="../images/playground/playground-keratonposter.MP4">
+          <video autoplay muted loop playsinline style="width:100%;display:block;height:auto">
+            <source src="../images/playground/playground-keratonposter.MP4" type="video/mp4">
+          </video>
+        </div>
+        <p class="pg-caption">Keraton · Motion poster</p>
+      </div>
+
+      <div class="pg-card" style="min-height:unset">
+        <img src="../images/playground/playground-isauwmerch3.jpg" alt="ISAUW merch" class="zoomable" data-lightbox style="width:100%;display:block;height:auto" />
+        <p class="pg-caption">ISAUW · Merch collection</p>
+      </div>
+
+      <div class="pg-card" style="min-height:unset">
+        <img src="../images/playground/playground-isauwmerch2.jpg" alt="ISAUW merch" class="zoomable" data-lightbox style="width:100%;display:block;height:auto" />
+        <p class="pg-caption">ISAUW · Merch collection</p>
+      </div>
+
+      <div class="pg-card" style="min-height:unset">
+        <img src="../images/playground/Playground-DFA1.png" alt="DFA UW Annual Expo 2026 poster" class="zoomable" data-lightbox style="width:100%;display:block;height:auto" />
+        <p class="pg-caption">DFA UW · Annual Expo 2026</p>
+      </div>
+
+      <div class="pg-card" style="min-height:unset">
+        <img src="../images/playground/Playground-DFA2.png" alt="DFA UW Internal Team Application poster" class="zoomable" data-lightbox style="width:100%;display:block;height:auto" />
+        <p class="pg-caption">DFA UW · Internal team application</p>
+      </div>
+
+      <div class="pg-card" style="min-height:unset">
+        <img src="../images/playground/playground-isauwmerch1.jpg" alt="ISAUW merch" class="zoomable" data-lightbox style="width:100%;display:block;height:auto" />
+        <p class="pg-caption">ISAUW · Merch collection</p>
+      </div>
+
+      <div class="pg-card" style="min-height:unset">
+        <img src="../images/playground/playground-isauwrecap.JPG" alt="ISAUW event recap" class="zoomable" data-lightbox style="width:100%;display:block;height:auto" />
+        <p class="pg-caption">ISAUW · Event recap</p>
+      </div>
+
+      <div class="pg-card" style="min-height:unset">
+        <img src="../images/playground/playground-keratonheadliner.jpg" alt="Keraton headliner poster" class="zoomable" data-lightbox style="width:100%;display:block;height:auto" />
+        <p class="pg-caption">Keraton · Headliner poster</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Fragrance -->
+  <section>
+    <div class="row"><span class="nm">· Fragrance</span><span class="ct">Scent Studio</span></div>
+
+    <!-- Scent Studio CTA -->
+    <a href="scent.html" class="pg-card" style="display:flex;flex-direction:row;min-height:auto;margin-bottom:16px;text-decoration:none">
+      <div class="pg-wip"><span>Under construction</span></div>
+      <div class="ph" style="flex:none;width:260px;min-height:160px;border-right:1px solid var(--line);border-radius:0">
+        <div class="corners"><span></span><span></span><span></span><span></span></div>
+        <div class="inner">
+          <span class="lbl">↳ interactive</span>
+          <span class="ttl" style="font-size:22px">Scent Studio</span>
+          <span class="hint">Three questions · one fragrance</span>
+        </div>
+      </div>
+      <div class="body" style="border-top:none;border-left:1px solid var(--line);justify-content:center">
+        <span class="tag">Experience</span>
+        <h3>Design a fragrance from a memory <em>that isn't yours.</em></h3>
+        <p>An interactive piece — answer three questions and receive a custom fragrance composed from a library of notes I've worked with. Part of the Sté line.</p>
+        <div class="notes" style="margin-top:8px"><span>Three questions</span><span>64 possible scents</span><span>Yours to keep</span></div>
+      </div>
+    </a>
+
+    <div class="pg-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="pg-card" style="min-height:420px">
+        <div class="pg-wip"><span>Under construction</span></div>
+        <div class="ph">
+          <div class="corners"><span></span><span></span><span></span><span></span></div>
+          <div class="inner"><span class="lbl">↳ fragrance 01</span><span class="ttl">Drop bottle photo</span><span class="hint">PNG / JPG · square</span></div>
+        </div>
+        <div class="body">
+          <span class="tag">No. 01 · fragrance</span>
+          <h3>Working <em>title.</em></h3>
+          <p>A short note on the brief, the season, or the memory this one came from.</p>
+          <div class="notes"><span>Top —</span><span>Heart —</span><span>Base —</span></div>
+        </div>
+      </div>
+
+      <div class="pg-card" style="min-height:420px">
+        <div class="pg-wip"><span>Under construction</span></div>
+        <div class="ph">
+          <div class="corners"><span></span><span></span><span></span><span></span></div>
+          <div class="inner"><span class="lbl">↳ fragrance 02</span><span class="ttl">Drop bottle photo</span><span class="hint">PNG / JPG · square</span></div>
+        </div>
+        <div class="body">
+          <span class="tag">No. 02 · fragrance</span>
+          <h3>Working <em>title.</em></h3>
+          <p>A short note on the brief, the season, or the memory this one came from.</p>
+          <div class="notes"><span>Top —</span><span>Heart —</span><span>Base —</span></div>
+        </div>
+      </div>
+
+      <div class="pg-card" style="min-height:420px">
+        <div class="pg-wip"><span>Under construction</span></div>
+        <div class="ph">
+          <div class="corners"><span></span><span></span><span></span><span></span></div>
+          <div class="inner"><span class="lbl">↳ fragrance 03</span><span class="ttl">Drop bottle photo</span><span class="hint">PNG / JPG · square</span></div>
+        </div>
+        <div class="body">
+          <span class="tag">No. 03 · fragrance</span>
+          <h3>Working <em>title.</em></h3>
+          <p>A short note on the brief, the season, or the memory this one came from.</p>
+          <div class="notes"><span>Top —</span><span>Heart —</span><span>Base —</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact">
+    <div>
+      <h2>bloom <em>where</em><br/>you're <em>planted!</em></h2>
+      <p class="contact-note"><strong>Sté is short for Steven</strong> — and it's a small wink at stay. It's the thread running through my work: design that invites people to stay engaged, art that holds attention, fragrances that linger long after the wearer leaves the room. Welcome. Sté with me a while.</p>
+    </div>
+    <a class="ascii-resume" href="#">
+      <img src="../assets/ascii-ste.png" alt="Sté — Resume" class="ascii-resume-img" />
+    </a>
+  </div>
+
+  <footer>
+    <div>® 2026 Steven Heng + iced americanos + Claude Code.</div>
+    <div>IN SEATTLE</div>
+  </footer>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <button class="lightbox-close" id="lightboxClose">Close ✕</button>
+  <img id="lightboxImg" src="" alt="" style="display:none" />
+  <video id="lightboxVideo" autoplay muted loop playsinline style="display:none"></video>
+</div>
+
+<script>
+(function(){
+  var html = document.documentElement;
+  var logo = document.getElementById('pgLogo');
+  function updateLogo(){
+    logo.src = html.classList.contains('dark') ? '../images/ste-logo.png' : '../assets/ste-logo.png';
+  }
+  updateLogo();
+  document.getElementById('modeToggle').addEventListener('click', function(){
+    html.classList.toggle('dark');
+    localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    updateLogo();
+  });
+
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  var lbVid = document.getElementById('lightboxVideo');
+
+  function openLightbox(){
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(){
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbVid.pause();
+    lbVid.removeAttribute('src');
+    lbVid.innerHTML = '';
+  }
+
+  document.querySelectorAll('[data-lightbox]').forEach(function(img){
+    img.addEventListener('click', function(){
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lbImg.style.display = 'block';
+      lbVid.style.display = 'none';
+      openLightbox();
+    });
+  });
+
+  document.querySelectorAll('.video-zoomable').forEach(function(wrap){
+    wrap.addEventListener('click', function(){
+      lbVid.innerHTML = '<source src="' + wrap.dataset.src + '" type="video/mp4">';
+      lbVid.load();
+      lbVid.style.display = 'block';
+      lbImg.style.display = 'none';
+      openLightbox();
+    });
+  });
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lb.addEventListener('click', function(e){ if(e.target === lb) closeLightbox(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLightbox(); });
+})();
+</script>
+</body>
+</html>

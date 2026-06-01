@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Delta Dental — Steven Heng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Thin.otf") format("opentype"); font-weight:200; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Light.otf") format("opentype"); font-weight:300; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Bold.otf") format("opentype"); font-weight:700; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Fine"; src:url("../assets/fonts/GTUltraFine-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+
+  :root{
+    --bg:#fff; --bg-2:#fafafa; --ink:oklch(0.18 0.02 60); --ink-2:oklch(0.42 0.015 70);
+    --line:oklch(0.92 0.005 75); --grid:oklch(0.75 0.005 75); --accent:#009a5c;
+    --accent-soft:color-mix(in oklch,#0F52C8 10%,transparent);
+    --display:"GT Planar",system-ui,sans-serif; --serif:"GT Ultra Fine",serif;
+    --sans:"Plus Jakarta Sans",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  }
+  html.dark{
+    --bg:#111110; --bg-2:#1c1b19;
+    --ink:oklch(0.91 0.01 75); --ink-2:oklch(0.55 0.012 70);
+    --line:oklch(0.27 0.008 70); --grid:oklch(0.34 0.006 70);
+    --accent:#00C97A;
+  }
+  html.dark .cursor{ mix-blend-mode:normal; }
+  /* project header */
+  .proj-header{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:50;
+    display:flex; align-items:center;
+    width:calc(100% - 48px); max-width:1200px;
+    padding:0 24px; height:56px;
+    border-radius:12px;
+    background: color-mix(in oklch, var(--bg) 82%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  }
+  .proj-header .ph-logo{ width:34px; height:34px; flex:none; display:grid; place-items:center; margin-right:24px; text-decoration:none; }
+  .proj-header .ph-logo img{ width:100%; height:auto; display:block; }
+  .proj-header nav{ display:flex; align-items:center; flex:1; }
+  .proj-header nav ol{ list-style:none; display:flex; gap:2px; }
+  .proj-header nav a{
+    display:block; padding:5px 11px; border-radius:3px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink-2); white-space:nowrap; transition:color .2s, background .2s; text-decoration:none;
+  }
+  .proj-header nav a:hover{ color:var(--accent); background:color-mix(in oklch, var(--accent) 12%, transparent); }
+  .proj-header .ph-right{
+    display:flex; align-items:center; gap:12px; margin-left:auto;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-2);
+  }
+  .mode-toggle{ display:flex; align-items:center; gap:7px; background:none; border:none; padding:0; cursor:pointer; font-family:var(--mono); font-size:9px; color:var(--ink-2); }
+  .mt-track{ width:28px; height:15px; border-radius:999px; border:1px solid var(--line); background:var(--bg-2); position:relative; flex:none; transition:background .35s,border-color .35s; }
+  .mt-knob{ width:9px; height:9px; border-radius:50%; background:var(--ink-2); position:absolute; top:2px; left:2px; transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s; }
+  html.dark .mt-track{ background:color-mix(in oklch, var(--accent) 14%, transparent); border-color:color-mix(in oklch, var(--accent) 40%, transparent); }
+  html.dark .mt-knob{ transform:translateX(13px); background:var(--accent); }
+  .ph-logo img.logo-dark{ display:none; }
+  html.dark .ph-logo img.logo-light{ display:none; }
+  html.dark .ph-logo img.logo-dark{ display:block; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{font-size:15px;line-height:1.5;position:relative}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size:18px 18px;opacity:.55;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+
+  .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:88px 56px 80px}
+
+  /* nav */
+  .topnav{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .topnav a{transition:color .25s}
+  .topnav a:hover{color:var(--accent)}
+  .topnav .crumb b{color:var(--ink);font-weight:400}
+
+  /* hero */
+  .hero{padding:64px 0 48px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:24px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:32px}
+  .meta-row .pill{padding:6px 12px;border:1px solid var(--line);border-radius:2px}
+  h1.title{font-family:var(--display);font-weight:500;font-size:clamp(48px,7vw,96px);line-height:.95;letter-spacing:-.035em}
+  h1.title em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-.02em}
+  .lede{margin-top:24px;max-width:60ch;font-family:var(--display);font-weight:300;font-size:22px;line-height:1.4;letter-spacing:-.01em;color:var(--ink-2)}
+
+  /* hero canvas */
+  .hero-canvas{margin-top:48px;aspect-ratio:16/9;border-radius:4px;border:1px solid var(--line);
+    background:linear-gradient(160deg,#040c24 0%,#0a1e58 55%,#0c2872 100%);
+    position:relative;overflow:hidden;color:#fff;padding:48px}
+  .hero-canvas::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.15) 1px, transparent 1px);
+    background-size:14px 14px;opacity:.4;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,transparent 100%);}
+  .hero-canvas .cap{position:relative;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.65}
+  .hero-canvas .word{position:relative;font-family:var(--display);font-weight:300;font-size:clamp(40px,7vw,104px);line-height:.95;letter-spacing:-.04em;margin-top:18px}
+  .hero-canvas .word em{font-family:var(--serif);font-style:italic;font-weight:400;color:rgba(180,205,255,.9)}
+  .hero-canvas .chips{display:flex;gap:10px;margin-top:32px;flex-wrap:wrap}
+  .hero-canvas .chips span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    padding:8px 12px;border:1px solid rgba(255,255,255,.22);border-radius:2px;backdrop-filter:blur(8px)}
+  .hero-canvas .stamp{position:absolute;right:24px;top:24px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+  .hero-canvas .nda-badge{
+    position:absolute;left:24px;bottom:24px;
+    font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    padding:5px 10px;border:1px solid rgba(255,255,255,.2);border-radius:2px;
+    background:rgba(255,255,255,.06);backdrop-filter:blur(4px);opacity:.75;
+  }
+
+  /* generic section */
+  section{padding:96px 0}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h2{font-family:var(--display);font-weight:400;font-size:clamp(36px,4.5vw,46px);line-height:1.05;letter-spacing:-.03em;max-width:24ch}
+  h2 em{font-family:var(--display);font-style:normal;font-weight:400;color:var(--ink);letter-spacing:-.03em}
+  h3{font-family:var(--display);font-weight:500;font-size:24px;line-height:1.15;letter-spacing:-.02em;margin-bottom:8px}
+  p{font-family:var(--sans);font-size:18px;max-width:62ch;color:var(--ink-2);line-height:1.6}
+  p strong{font-weight:400;color:var(--ink)}
+  p em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+  p + p{margin-top:14px}
+
+  .two-col{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:start;margin-top:32px}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;gap:32px}}
+
+  /* HMW callout */
+  .hmw{margin-top:32px;padding:48px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);position:relative}
+  .hmw .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  .hmw .q{font-family:var(--display);font-weight:300;font-size:clamp(24px,3vw,36px);line-height:1.25;letter-spacing:-.02em;color:var(--ink);max-width:32ch}
+  .hmw .q em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+
+  /* team grid */
+  .team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:32px}
+  @media(max-width:800px){.team-grid{grid-template-columns:1fr 1fr}}
+  .team-cell{background:var(--bg);padding:22px;display:flex;flex-direction:column;gap:8px;min-height:140px}
+  .team-cell.me{background:color-mix(in oklch,var(--accent) 5%,var(--bg))}
+  .team-cell.leave{opacity:.55}
+  .team-cell .role{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .team-cell .name{font-family:var(--display);font-weight:500;font-size:18px;letter-spacing:-.02em;line-height:1.1}
+  .team-cell .note{font-family:var(--mono);font-size:10px;color:var(--ink-2);letter-spacing:.04em;margin-top:auto;line-height:1.4}
+
+  /* friction list */
+  .frictions{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:32px}
+  @media(max-width:700px){.frictions{grid-template-columns:1fr}}
+  .friction{background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:10px;min-height:160px}
+  .friction .num{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent)}
+  .friction .ttl{font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:-.015em;line-height:1.2}
+  .friction .ttl em{font-family:var(--display);font-style:normal;font-weight:500;color:var(--ink)}
+  .friction p{font-size:13px;line-height:1.55;max-width:none}
+
+  /* feat: copy + placeholder — from accordant */
+  .feat{margin-top:28px;border:1px solid var(--line);border-radius:4px;background:var(--bg);overflow:hidden;display:grid;grid-template-columns:1fr 1.3fr;gap:0;align-items:stretch}
+  @media(max-width:900px){.feat{grid-template-columns:1fr}}
+  .feat .copy{padding:36px;display:flex;flex-direction:column;gap:14px}
+  .feat .copy .num{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .feat .copy h3{font-family:var(--display);font-weight:500;font-size:32px;letter-spacing:-.025em;line-height:1.05;margin:0}
+  .feat .copy h3 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+  .feat .copy p{font-family:var(--sans);font-size:15px;line-height:1.6;color:var(--ink-2)}
+  .feat .copy ul{list-style:none;padding:0;margin-top:6px;display:flex;flex-direction:column;gap:8px}
+  .feat .copy li{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--ink);padding-left:18px;position:relative}
+  .feat .copy li::before{content:"→";position:absolute;left:0;color:var(--accent)}
+  .feat .ph{position:relative;background:var(--bg-2);min-height:360px;border-left:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:32px;overflow:hidden}
+  @media(max-width:900px){.feat .ph{border-left:none;border-top:1px solid var(--line);min-height:280px}}
+  .feat .ph::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(oklch(0.85 0.005 75) 1px,transparent 1px);background-size:14px 14px;opacity:.5;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent)}
+  .feat .ph .corners{position:absolute;inset:14px;pointer-events:none}
+  .feat .ph .corners span{position:absolute;width:14px;height:14px;border:1px solid var(--accent)}
+  .feat .ph .corners span:nth-child(1){top:0;left:0;border-right:none;border-bottom:none}
+  .feat .ph .corners span:nth-child(2){top:0;right:0;border-left:none;border-bottom:none}
+  .feat .ph .corners span:nth-child(3){bottom:0;left:0;border-right:none;border-top:none}
+  .feat .ph .corners span:nth-child(4){bottom:0;right:0;border-left:none;border-top:none}
+  .feat .ph .inner{position:relative;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+  .feat .ph .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .feat .ph .ttl{font-family:var(--display);font-weight:400;font-size:22px;letter-spacing:-.02em;color:var(--ink)}
+  .feat .ph .hint{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:5px 10px;border:1px dashed var(--line);border-radius:2px;background:var(--bg)}
+
+  /* wide placeholder — full width */
+  .proto-frame{margin-top:32px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);position:relative;overflow:hidden;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center}
+  .proto-frame::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(oklch(0.85 0.005 75) 1px,transparent 1px);background-size:14px 14px;opacity:.5;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000,transparent)}
+  .proto-frame .inner{position:relative;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center;padding:48px}
+  .proto-frame .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .proto-frame .ttl{font-family:var(--display);font-weight:400;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.025em;line-height:1.1;color:var(--ink)}
+  .proto-frame .ttl em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+  .proto-frame .sub{font-family:var(--sans);font-size:14px;color:var(--ink-2);max-width:46ch;line-height:1.55}
+  .proto-frame .corners{position:absolute;inset:14px;pointer-events:none}
+  .proto-frame .corners span{position:absolute;width:18px;height:18px;border:1px solid var(--accent)}
+  .proto-frame .corners span:nth-child(1){top:0;left:0;border-right:none;border-bottom:none}
+  .proto-frame .corners span:nth-child(2){top:0;right:0;border-left:none;border-bottom:none}
+  .proto-frame .corners span:nth-child(3){bottom:0;left:0;border-right:none;border-top:none}
+  .proto-frame .corners span:nth-child(4){bottom:0;right:0;border-left:none;border-top:none}
+  .proto-frame .embed-hint{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);padding:6px 12px;border:1px dashed var(--line);border-radius:2px;background:var(--bg)}
+
+  /* abstract stepper illustration */
+  .stepper-illo{width:80%;display:flex;flex-direction:column;gap:0;position:relative}
+  .stepper-step{display:flex;align-items:flex-start;gap:14px;position:relative}
+  .stepper-step + .stepper-step{margin-top:0}
+  .step-track{display:flex;flex-direction:column;align-items:center;flex:none}
+  .step-circle{
+    width:32px;height:32px;border-radius:50%;
+    border:1.5px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+    color:var(--ink-2);background:var(--bg);flex:none;
+  }
+  .step-circle.done{border-color:var(--accent);background:var(--accent);color:#fff}
+  .step-circle.active{
+    border-color:var(--accent);background:var(--accent);color:#fff;
+    box-shadow:0 0 0 5px color-mix(in oklch,var(--accent) 18%,transparent);
+  }
+  .step-connector{width:1.5px;height:28px;background:var(--line);margin:0 auto}
+  .step-connector.done{background:var(--accent)}
+  .step-info{padding:4px 0 28px;display:flex;flex-direction:column;gap:4px}
+  .step-info .s-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+  .step-info .s-label.active{color:var(--ink);font-weight:500}
+  .step-info .s-bar{height:6px;border-radius:2px;background:var(--line);margin-top:4px}
+  .step-info .s-bar.done{background:color-mix(in oklch,var(--accent) 30%,var(--line))}
+  .step-info .s-bar.active{background:var(--accent);width:55%}
+  .step-info .s-bar.w40{width:40%}
+  .step-info .s-bar.w70{width:70%}
+  .step-info .s-bar.w55{width:55%}
+  .stepper-step:last-child .step-info{padding-bottom:0}
+
+  /* process flow */
+  .flow{display:flex;align-items:stretch;gap:0;margin-top:32px;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  @media(max-width:800px){.flow{flex-direction:column}}
+  .flow .step{flex:1;padding:24px;background:var(--bg);position:relative;display:flex;flex-direction:column;gap:8px}
+  .flow .step + .step{border-left:1px solid var(--line)}
+  @media(max-width:800px){.flow .step + .step{border-left:none;border-top:1px solid var(--line)}}
+  .flow .num{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.14em}
+  .flow .ttl{font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:-.015em}
+  .flow .ds{font-family:var(--sans);font-size:13px;color:var(--ink-2);line-height:1.5}
+  .flow .ds{font-family:var(--sans);font-size:13px;color:var(--ink-2);line-height:1.5}
+
+  /* results placeholder */
+  .results-ph{
+    margin-top:32px;border:2px dashed var(--line);border-radius:4px;
+    padding:56px 48px;display:flex;flex-direction:column;gap:14px;
+    background:var(--bg-2);
+  }
+  .results-ph .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .results-ph .ttl{font-family:var(--display);font-weight:400;font-size:clamp(28px,3vw,40px);letter-spacing:-.025em;line-height:1.1;color:var(--ink)}
+  .results-ph .ttl em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+  .results-ph .sub{font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.55;max-width:52ch}
+  .results-ph .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  @media(max-width:700px){.results-ph .slots{grid-template-columns:1fr}}
+  .metric-slot{border:1px dashed var(--line);border-radius:4px;padding:22px;background:var(--bg);display:flex;flex-direction:column;gap:6px}
+  .metric-slot .ml{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+  .metric-slot .mv{font-family:var(--display);font-weight:500;font-size:40px;letter-spacing:-.03em;color:var(--line)}
+  .metric-slot .md{font-family:var(--mono);font-size:10px;color:var(--ink-2);letter-spacing:.06em}
+
+  /* reflection placeholder */
+  .reflection-ph{
+    border:1px dashed var(--line);border-radius:4px;
+    padding:32px;background:var(--bg-2);
+    font-family:var(--sans);font-size:16px;line-height:1.65;color:var(--ink-2);
+    max-width:64ch;font-style:italic;
+  }
+  .reflection-ph::before{
+    content:"✎ Edit this";display:block;
+    font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-style:normal;margin-bottom:14px;
+  }
+
+  /* learnings */
+  .learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:32px}
+  @media(max-width:700px){.learn-grid{grid-template-columns:1fr}}
+  .learn-item{background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:8px}
+  .learn-item .num{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--accent)}
+  .learn-item h3{font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:-.015em;margin-bottom:0}
+  .learn-item h3 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+  .learn-item p{font-size:14px;line-height:1.55;max-width:none}
+
+  /* footer */
+  /* contact footer */
+  .contact{display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px;padding:80px 0 24px}
+  .contact h2{font-family:var(--display);font-weight:500;font-size:clamp(36px,5vw,72px);line-height:0.95;letter-spacing:-0.04em;color:var(--ink)}
+  .contact h2 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-0.025em}
+  .contact-note{margin-top:20px;font-family:var(--mono);font-size:11px;line-height:1.7;letter-spacing:0.02em;color:var(--ink-2);max-width:52ch}
+  .ascii-resume{display:block;flex:none;align-self:flex-end}
+  .ascii-resume-img{width:280px;height:auto;display:block;mix-blend-mode:multiply;opacity:0.75;transition:opacity .3s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
+  .ascii-resume:hover .ascii-resume-img{opacity:1;transform:scale(1.03)}
+  html.dark .ascii-resume-img{mix-blend-mode:normal;filter:invert(1);opacity:0.6}
+  html.dark .ascii-resume:hover .ascii-resume-img{opacity:0.85}
+
+  footer{padding:64px 0 0;display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);flex-wrap:wrap;gap:16px}
+  footer a{color:var(--ink);transition:color .25s}
+  footer a:hover{color:var(--accent)}
+  .nextlink{font-family:var(--display);font-weight:400;font-size:24px;letter-spacing:-.015em;color:var(--ink);text-transform:none}
+  .nextlink em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+
+  .back{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:32px;transition:color .25s}
+  .back:hover{color:var(--accent)}
+  .back::before{content:"←"}
+
+  .team-hover-overlay{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0);opacity:0;
+    transition:opacity .25s,background .25s;
+    font-family:var(--display);font-weight:400;font-size:clamp(18px,2.5vw,26px);
+    letter-spacing:-.02em;color:#fff;pointer-events:none;
+  }
+  div:has(> .team-hover-overlay):hover .team-hover-overlay{
+    opacity:1;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  }
+
+  /* scroll reveal */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .75s ease,transform .75s cubic-bezier(.2,.8,.2,1);transition-delay:var(--reveal-delay,0s)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<header class="proj-header">
+  <a href="../Portfolio.html" class="ph-logo" aria-label="Back to portfolio">
+    <img class="logo-light" src="../assets/ste-logo.png" alt="Sté" />
+    <img class="logo-dark" src="../images/ste-logo.png" alt="Sté" />
+  </a>
+  <nav aria-label="Primary">
+    <ol>
+      <li><a href="../Portfolio.html#work">Work</a></li>
+      <li><a href="../Portfolio.html#about">About</a></li>
+      <li><a href="playground.html">Playground ↗</a></li>
+      <li><a href="#">Resume ↗</a></li>
+    </ol>
+  </nav>
+  <div class="ph-right">
+    <span>Delta Dental</span>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle dark mode">
+      <span>☀</span>
+      <div class="mt-track"><div class="mt-knob"></div></div>
+      <span>☾</span>
+    </button>
+  </div>
+</header>
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero reveal" style="border-top:none;padding-top:48px">
+    <a class="back" href="../Portfolio.html">Back to work</a>
+
+    <div class="meta-row">
+      <span class="pill">UX Design Intern</span>
+      <span class="pill">Enterprise · B2B</span>
+      <span class="pill">End-to-end enrollment</span>
+      <span class="pill">Summer 2025</span>
+    </div>
+
+    <h1 class="title">Delta Dental</h1>
+    <p class="lede">Delta Dental is expanding into ancillary products — but the enrollment experience hadn't kept pace. Redundant steps, unclear progress, and growing product complexity were frustrating the brokers and employers who depend on it most.</p>
+
+    <img src="../images/delta dental/deltadental-thumbnail.png" alt="Delta Dental — internship workspace" style="margin-top:48px;width:100%;display:block;border-radius:4px;border:1px solid var(--line);" />
+  </section>
+
+  <!-- OVERVIEW -->
+  <section class="reveal">
+    <div class="eyebrow">Overview</div>
+    <h2>Redesigning enrollment for brokers and employers.</h2>
+    <div class="two-col" style="margin-top:32px">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <p>A UX internship at Delta Dental, redesigning the broker and employer enrollment experience as the company expanded into ancillary insurance products. Growing complexity had introduced redundant steps and unclear progress — making an already demanding B2B flow harder to navigate.</p>
+        <p>I joined a cross-functional team mid-project, owning design from discovery through developer handoff — research, wireframes, hi-fidelity screens, and usability testing.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Type</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">UX Design Internship · Enterprise B2B</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Scope</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Research · Wireframes → Hi-fi · Usability testing · Dev handoff</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Platform</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Web platform</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Year</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Summer 2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITUATION -->
+  <section class="reveal">
+    <div class="eyebrow">Situation</div>
+    <h2>A growing product line. An enrollment flow that <em>didn't</em> grow with it.</h2>
+    <h3 style="margin-top:32px">The context</h3>
+    <div class="two-col" style="margin-top:16px">
+      <div>
+        <p>Delta Dental is expanding beyond dental into ancillary products — vision and other insurance offerings. This expansion meant more products, more options, and more configuration decisions layered on top of an already complex enrollment experience.</p>
+      </div>
+      <div>
+        <p><strong>Brokers and employers</strong> are the primary users responsible for enrolling groups into coverage plans. As more product lines were added, the existing flow's redundancies became harder to ignore — and harder to navigate.</p>
+      </div>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-cell me">
+        <span class="role">Me · Product Design Intern</span>
+        <span class="name">Steven Heng</span>
+        <span class="note">Research · wireframes → hi-fi · usability testing · dev handoff</span>
+      </div>
+      <div class="team-cell">
+        <span class="role">UX Designer</span>
+        <span class="name">Designer 01</span>
+        <span class="note">Flow architecture · design review</span>
+      </div>
+      <div class="team-cell">
+        <span class="role">UX Engineer</span>
+        <span class="name">Designer 02</span>
+        <span class="note">Design systems · review</span>
+      </div>
+      <div class="team-cell">
+        <span class="role">PM Intern</span>
+        <span class="name">PM Intern</span>
+        <span class="note">Co-led user interviews · backlog · stakeholder alignment</span>
+      </div>
+      <div class="team-cell leave">
+        <span class="role">UX Researcher · on leave</span>
+        <span class="name">Researcher</span>
+        <span class="note">On leave for part of the project — research conducted with PM intern</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TASK / PROBLEM -->
+  <section class="reveal">
+    <div class="eyebrow">Task</div>
+    <h2>Reduce redundancy, clarify progress, and <em>accommodate</em> what's coming.</h2>
+    <div class="two-col">
+      <div>
+        <h3>What brokers &amp; employers were running into</h3>
+        <p>The existing enrollment flow had accumulated friction over time. Adding ancillary products didn't just expand the flow — it compounded the existing problems, making an already opaque process even harder to trust.</p>
+      </div>
+      <div>
+        <h3>The brief</h3>
+        <p>Redesign the <strong>end-to-end enrollment flow</strong> for both brokers and employers — reducing redundancy, clarifying where users are in the process, and building a foundation that can accommodate ancillary products without breaking the experience.</p>
+      </div>
+    </div>
+
+    <div class="frictions">
+      <div class="friction">
+        <span class="num">01</span>
+        <span class="ttl">Redundant steps across <em>the flow</em></span>
+        <p>Users were asked for the same information in multiple places. Without a clear sense of progress, it was hard to know what still needed to happen — or what had already been done.</p>
+      </div>
+      <div class="friction">
+        <span class="num">02</span>
+        <span class="ttl">No sense of <em>where you are</em></span>
+        <p>Enrollment involves many sequential decisions. Without a visible progress model, users couldn't track their position — or how much work was left.</p>
+      </div>
+      <div class="friction">
+        <span class="num">03</span>
+        <span class="ttl">New products, <em>old structure</em></span>
+        <p>Ancillary expansion added new product lines to a flow that wasn't designed to hold them. The result was confusing navigation and unclear branching between product types.</p>
+      </div>
+      <div class="friction">
+        <span class="num">04</span>
+        <span class="ttl">Two user types, <em>one unclear path</em></span>
+        <p>Brokers and employers have different relationships to the enrollment process but shared an undifferentiated experience — causing friction for both, for different reasons.</p>
+      </div>
+    </div>
+
+    <div class="hmw">
+      <div class="lbl">Design question</div>
+      <div class="q">How might we redesign enrollment so that brokers and employers always know <em>where they are</em>, what comes next, and can navigate a growing product offering <em>without confusion?</em></div>
+    </div>
+  </section>
+
+  <!-- PROCESS — ACTION -->
+  <section class="reveal">
+    <div class="eyebrow">Action</div>
+    <h2 style="max-width:none;white-space:nowrap">Five phases from <em>research</em> to handoff.</h2>
+    <p style="margin-top:24px">With the UX researcher on leave, the process required some improvisation — particularly during discovery. Each phase built directly on the last.</p>
+
+    <div class="flow">
+      <div class="step"><span class="num">01</span><span class="ttl">Research</span><span class="ds">User interviews conducted with PM intern. Identified key pain points despite researcher absence.</span></div>
+      <div class="step"><span class="num">02</span><span class="ttl">Ideation</span><span class="ds">Proposed stepper component with 2 designers. Mid-fi wireframes across broker and employer flows.</span></div>
+      <div class="step"><span class="num">03</span><span class="ttl">Hi-fi design</span><span class="ds">Converted wireframes into complete high-fidelity designs for the full enrollment flow.</span></div>
+      <div class="step"><span class="num">04</span><span class="ttl">Usability testing</span><span class="ds">Tested hi-fi prototype, gathered findings, iterated on key friction points.</span></div>
+      <div class="step"><span class="num">05</span><span class="ttl">Dev handoff</span><span class="ds">Created design change logs to streamline communication and handoff with the dev team.</span></div>
+    </div>
+  </section>
+
+  <!-- REFLECTION -->
+  <section class="reveal" style="border-bottom:none">
+    <div class="eyebrow">Reflection</div>
+    <h2>A summer in <em>Seattle.</em></h2>
+
+    <div class="two-col" style="margin-top:32px">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <p>This summer, I interned at Delta Dental of Washington on Triforza's Digital Platform Team, where I led end-to-end design of the new enrollment flow for Brokers and Employers.</p>
+        <p>I started by breaking down the existing workflow to identify pain points, then collaborated with Brooke K. (PM Intern) to refine our user research interviews and Product Requirements Document. From there, I translated those insights into mid-fidelity and high-fidelity designs, and conducted usability testing to validate the direction.</p>
+        <p>Before taking on the enrollment flow, I had the chance to work on other projects, including refining the Multi-Factor Authentication (MFA) experience and the Provider Claims Dashboard.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <p>I also worked closely with engineers based in Ireland, and initiated a design change log so teams could review updates asynchronously, on their own time. The product is currently in development, and I'll share more once it officially ships.</p>
+        <div style="padding:24px 28px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);display:flex;flex-direction:column;gap:12px">
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Thank you</div>
+          <p style="font-size:15px;max-width:none">Grateful for this opportunity and for the chance to work alongside fellow designers, PMs, engineers, and all the stakeholders who shaped this project. A special thank you to my mentors, <strong>Jessie Brown</strong> (Designer) and <strong>Kimberly Lum</strong> (UX Marketing Manager). Lots of lessons learned, lots of caffeine involved, and a great summer in Seattle.</p>
+        </div>
+        <div style="position:relative;border-radius:4px;overflow:hidden;border:1px solid var(--line);cursor:pointer">
+          <img src="../images/delta dental/deltadental-pic2.jpg" alt="Delta Dental — summer 2025" style="width:100%;display:block;" />
+          <div class="team-hover-overlay">Digital Platform Team!</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact">
+    <div>
+      <h2>bloom <em>where</em><br/>you're <em>planted!</em></h2>
+      <p class="contact-note"><strong>Sté is short for Steven</strong> — and it's a small wink at stay. It's the thread running through my work: design that invites people to stay engaged, art that holds attention, fragrances that linger long after the wearer leaves the room. Welcome. Sté with me a while.</p>
+    </div>
+    <a class="ascii-resume" href="#">
+      <img src="../assets/ascii-ste.png" alt="Sté — Resume" class="ascii-resume-img" />
+    </a>
+  </div>
+
+  <footer>
+    <div>® 2026 Steven Heng + iced americanos + Claude Code.</div>
+    <div>IN SEATTLE</div>
+  </footer>
+
+</div>
+
+<script>
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);}});
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  ['.feat', '.friction', '.learn-item', '.metric-slot'].forEach(sel => {
+    document.querySelectorAll(sel).forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.setProperty('--reveal-delay', (i * 0.07) + 's');
+      io.observe(el);
+    });
+  });
+</script>
+<script>
+  (function(){
+    var html = document.documentElement;
+    document.getElementById('modeToggle').addEventListener('click', function(){
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+  })();
+</script>
+</body>
+</html>

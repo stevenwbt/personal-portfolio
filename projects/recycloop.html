@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recycloop — Steven Heng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Thin.otf") format("opentype"); font-weight:200; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Light.otf") format("opentype"); font-weight:300; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Medium.otf") format("opentype"); font-weight:500; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Planar"; src:url("../assets/fonts/GTPlanar-Bold.otf") format("opentype"); font-weight:700; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-Regular.otf") format("opentype"); font-weight:400; font-style:normal; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Median"; src:url("../assets/fonts/GTUltraMedian-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+  @font-face{ font-family:"GT Ultra Fine"; src:url("../assets/fonts/GTUltraFine-RegularItalic.otf") format("opentype"); font-weight:400; font-style:italic; font-display:swap;}
+
+  :root{
+    --bg:#fff; --bg-2:#fafafa; --ink:oklch(0.18 0.02 60); --ink-2:oklch(0.42 0.015 70);
+    --line:oklch(0.92 0.005 75); --grid:oklch(0.75 0.005 75); --accent:#1a6b3a;
+    --display:"GT Planar",system-ui,sans-serif; --serif:"GT Ultra Fine",serif;
+    --sans:"Plus Jakarta Sans",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+    --green:#4ade80; --earth:#a37c5c;
+  }
+  html.dark{
+    --bg:#111110; --bg-2:#1c1b19;
+    --ink:oklch(0.91 0.01 75); --ink-2:oklch(0.55 0.012 70);
+    --line:oklch(0.27 0.008 70); --grid:oklch(0.34 0.006 70);
+    --accent:#4ade80;
+    --green:#4ade80; --earth:#c4956a;
+  }
+  html.dark .cursor{ mix-blend-mode:normal; }
+
+  /* project header */
+  .proj-header{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:50;
+    display:flex; align-items:center;
+    width:calc(100% - 48px); max-width:1200px;
+    padding:0 24px; height:56px;
+    border-radius:12px;
+    background: color-mix(in oklch, var(--bg) 82%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  }
+  .proj-header .ph-logo{ width:34px; height:34px; flex:none; display:grid; place-items:center; margin-right:24px; text-decoration:none; }
+  .proj-header .ph-logo img{ width:100%; height:auto; display:block; }
+  .proj-header nav{ display:flex; align-items:center; flex:1; }
+  .proj-header nav ol{ list-style:none; display:flex; gap:2px; }
+  .proj-header nav a{
+    display:block; padding:5px 11px; border-radius:3px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink-2); white-space:nowrap; transition:color .2s, background .2s; text-decoration:none;
+  }
+  .proj-header nav a:hover{ color:var(--accent); background:color-mix(in oklch, var(--accent) 12%, transparent); }
+  .proj-header .ph-right{
+    display:flex; align-items:center; gap:12px; margin-left:auto;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-2);
+  }
+  .mode-toggle{ display:flex; align-items:center; gap:7px; background:none; border:none; padding:0; cursor:pointer; font-family:var(--mono); font-size:9px; color:var(--ink-2); }
+  .mt-track{ width:28px; height:15px; border-radius:999px; border:1px solid var(--line); background:var(--bg-2); position:relative; flex:none; transition:background .35s,border-color .35s; }
+  .mt-knob{ width:9px; height:9px; border-radius:50%; background:var(--ink-2); position:absolute; top:2px; left:2px; transition:transform .35s cubic-bezier(.2,.8,.2,1),background .35s; }
+  html.dark .mt-track{ background:color-mix(in oklch, var(--accent) 14%, transparent); border-color:color-mix(in oklch, var(--accent) 40%, transparent); }
+  html.dark .mt-knob{ transform:translateX(13px); background:var(--accent); }
+  .ph-logo img.logo-dark{ display:none; }
+  html.dark .ph-logo img.logo-light{ display:none; }
+  html.dark .ph-logo img.logo-dark{ display:block; }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{font-size:15px;line-height:1.5;position:relative}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size:18px 18px;opacity:.55;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);
+            mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,#000 0%,#000 35%,transparent 90%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+
+  .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:88px 56px 80px}
+
+  .topnav{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .topnav a{transition:color .25s}
+  .topnav a:hover{color:var(--accent)}
+  .topnav .crumb b{color:var(--ink);font-weight:400}
+
+  .hero{padding:64px 0 48px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:24px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:32px}
+  .meta-row .pill{padding:6px 12px;border:1px solid var(--line);border-radius:2px}
+  h1.title{font-family:var(--display);font-weight:500;font-size:clamp(48px,7vw,96px);line-height:.95;letter-spacing:-.035em}
+  h1.title em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-.02em}
+  .lede{margin-top:24px;max-width:60ch;font-family:var(--display);font-weight:300;font-size:22px;line-height:1.4;letter-spacing:-.01em;color:var(--ink-2)}
+
+  /* hero canvas */
+  .hero-canvas{
+    margin-top:48px;border-radius:4px;overflow:hidden;
+  }
+  .hero-canvas .hero-img{
+    display:block;width:100%;height:auto;
+  }
+
+  section{padding:96px 0}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h2{font-family:var(--display);font-weight:400;font-size:clamp(36px,4.5vw,46px);line-height:1.05;letter-spacing:-.03em;max-width:24ch;color:#000}
+  h2 em{font-family:var(--display);font-style:normal;font-weight:400;color:#000;letter-spacing:-.015em}
+  h3{font-family:var(--display);font-weight:500;font-size:24px;line-height:1.15;letter-spacing:-.02em;margin-bottom:8px}
+  p{font-family:var(--sans);font-size:18px;max-width:62ch;color:var(--ink-2);line-height:1.6}
+  p strong{font-weight:400;color:var(--ink)}
+  p em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+  p + p{margin-top:14px}
+
+  .two-col{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:start;margin-top:32px}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;gap:32px}}
+
+  /* HMW */
+  .hmw{margin-top:32px;padding:48px;border:1px solid var(--line);border-radius:4px;background:var(--bg-2);position:relative}
+  .hmw .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  .hmw .q{font-family:var(--display);font-weight:300;font-size:clamp(24px,3vw,36px);line-height:1.25;letter-spacing:-.02em;color:var(--ink);max-width:30ch}
+  .hmw .q em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+
+  /* research stats */
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:32px}
+  @media(max-width:700px){.stats-grid{grid-template-columns:1fr}}
+  .stat-block{background:var(--bg);padding:32px;display:flex;flex-direction:column;gap:10px;min-height:180px}
+  .stat-block .pct{font-family:var(--display);font-weight:500;font-size:64px;line-height:1;letter-spacing:-.04em;color:var(--ink)}
+  .stat-block .pct em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+  .stat-block .src{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .stat-block p{font-size:13px;line-height:1.55;max-width:none;margin-top:4px}
+
+  /* features */
+  .features{display:flex;flex-direction:column;gap:80px;margin-top:48px}
+  .feature{display:flex;flex-direction:column;gap:24px}
+  .feature .preview{
+    aspect-ratio:16/7;
+    background:linear-gradient(160deg,#071a0e 0%,#0d2e18 60%,#112b10 100%);
+    border-radius:4px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  }
+  .feature .preview .leaves-sm{
+    position:absolute;inset:0;
+    background-image:radial-gradient(rgba(74,222,128,.8) 1px,transparent 1px);
+    background-size:24px 24px;opacity:.1;
+  }
+  .feature .body{display:flex;flex-direction:column;gap:10px}
+  .feature .body .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .feature .body h3{margin-bottom:0}
+  .feature .body p{font-size:14px;line-height:1.55;color:var(--ink-2)}
+
+  /* mock UI */
+  .mock{
+    position:relative;width:68%;background:#081a0f;
+    border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:16px;
+    display:flex;flex-direction:column;gap:10px;
+    font-family:var(--mono);font-size:10px;color:#fff;
+    box-shadow:0 24px 64px rgba(0,0,0,.5);
+  }
+  .mock .mhead{display:flex;justify-content:space-between;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;font-size:9px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .mock .label{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+
+  /* learnings */
+  .learn{display:grid;grid-template-columns:1fr 1fr;gap:64px;margin-top:32px}
+  @media(max-width:900px){.learn{grid-template-columns:1fr;gap:32px}}
+  .learn .col p{font-size:16px;line-height:1.65;color:var(--ink)}
+
+  /* learn bullets */
+  .learn-list{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:32px}
+  @media(max-width:700px){.learn-list{grid-template-columns:1fr}}
+  .learn-item{background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:8px}
+  .learn-item .num{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--accent)}
+  .learn-item h3{font-size:20px;letter-spacing:-.015em;margin-bottom:0}
+  .learn-item h3 em{font-family:var(--display);font-style:normal;font-weight:400;color:var(--accent)}
+  .learn-item p{font-size:14px;line-height:1.55;max-width:none}
+
+  /* contact footer */
+  .contact{display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px;padding:80px 0 24px}
+  .contact h2{font-family:var(--display);font-weight:500;font-size:clamp(36px,5vw,72px);line-height:0.95;letter-spacing:-0.04em;color:var(--ink)}
+  .contact h2 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent);letter-spacing:-0.025em}
+  .contact-note{margin-top:20px;font-family:var(--mono);font-size:11px;line-height:1.7;letter-spacing:0.02em;color:var(--ink-2);max-width:52ch}
+  .ascii-resume{display:block;flex:none;align-self:flex-end}
+  .ascii-resume-img{width:280px;height:auto;display:block;mix-blend-mode:multiply;opacity:0.75;transition:opacity .3s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
+  .ascii-resume:hover .ascii-resume-img{opacity:1;transform:scale(1.03)}
+  html.dark .ascii-resume-img{mix-blend-mode:normal;filter:invert(1);opacity:0.6}
+  html.dark .ascii-resume:hover .ascii-resume-img{opacity:0.85}
+
+  footer{padding:64px 0 0;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);flex-wrap:wrap;gap:16px}
+  footer a{color:var(--ink);transition:color .25s}
+  footer a:hover{color:var(--accent)}
+  .nextlink{font-family:var(--display);font-weight:400;font-size:24px;letter-spacing:-.015em;color:var(--ink);text-transform:none}
+  .nextlink em{font-family:var(--serif);font-style:italic;color:var(--accent)}
+
+  .back{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:32px;transition:color .25s}
+  .back:hover{color:var(--accent)}
+  .back::before{content:"←"}
+
+  /* scroll reveal */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .75s ease,transform .75s cubic-bezier(.2,.8,.2,1);transition-delay:var(--reveal-delay,0s)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<header class="proj-header">
+  <a href="../Portfolio.html" class="ph-logo" aria-label="Back to portfolio">
+    <img class="logo-light" src="../assets/ste-logo.png" alt="Sté" />
+    <img class="logo-dark" src="../images/ste-logo.png" alt="Sté" />
+  </a>
+  <nav aria-label="Primary">
+    <ol>
+      <li><a href="../Portfolio.html#work">Work</a></li>
+      <li><a href="../Portfolio.html#about">About</a></li>
+      <li><a href="playground.html">Playground ↗</a></li>
+      <li><a href="#">Resume ↗</a></li>
+    </ol>
+  </nav>
+  <div class="ph-right">
+    <span>Recycloop</span>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle dark mode">
+      <span>☀</span>
+      <div class="mt-track"><div class="mt-knob"></div></div>
+      <span>☾</span>
+    </button>
+  </div>
+</header>
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero reveal" style="border-top:none;padding-top:48px">
+    <a class="back" href="../Portfolio.html">Back to work</a>
+
+    <div class="meta-row">
+      <span class="pill">Mobile design</span>
+      <span class="pill">Business case</span>
+      <span class="pill">UX Designer · Branding</span>
+      <span class="pill">February 2024</span>
+    </div>
+
+    <h1 class="title">Recycloop</h1>
+    <p class="lede">The U.S. recycling system is broken by inconsistency — rules vary by city, contamination rates are high, and most people simply don't know what goes where. Recycloop is a mobile platform that fixes that with AI, rewards, and a circular marketplace.</p>
+
+    <div class="hero-canvas">
+      <img class="hero-img" src="../images/recycloop/recycloop-onboarding.webp" alt="Recycloop app screens">
+    </div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section class="reveal">
+    <div class="eyebrow">Overview</div>
+    <h2>Turning recycling confusion into confident, rewarded action.</h2>
+    <div class="two-col" style="margin-top:32px">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <p>Recycloop is an innovative mobile platform that champions the recycling movement for future generations. The mission centers on nurturing a sustainability culture that benefits both humanity and the earth — by making the right choice the easy choice.</p>
+        <p>The app encourages users to break down items into recyclable raw materials for nearby drop-off stations, converting collected materials into reward points as tangible incentives for sustainable behavior.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Type</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">Mobile design · Business case</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Scope</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">UX design · Branding · Icon design</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Context</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">UW Environmental Innovation Challenge</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px">Year</div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink)">February 2024</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHALLENGE -->
+  <section class="reveal">
+    <div class="eyebrow">The challenge</div>
+    <h2>People want to recycle. The system makes it nearly impossible.</h2>
+    <div class="two-col">
+      <div>
+        <h3>The gap</h3>
+        <p>The U.S. recycling system suffers from <strong>consumer confusion due to inconsistent recycling policies across regions</strong>, causing high contamination rates, operational inefficiencies, and cascading environmental and economic impacts.</p>
+        <p>Many individuals lack the knowledge and tools needed to participate effectively — resulting in improper disposal and chronically underutilized recycling programs.</p>
+      </div>
+      <div>
+        <h3>The brief</h3>
+        <p>Design a unified, accessible recycling platform that <em>educates consumers on location-specific rules</em>, reduces confusion and contamination, and promotes sustainable behaviors through meaningful incentives.</p>
+      </div>
+    </div>
+
+    <div class="hmw">
+      <div class="lbl">How might we statement</div>
+      <div class="q">How might we create a <em>unified recycling platform</em> that educates consumers on local rules, reduces contamination, and promotes <em>sustainable behaviors</em>?</div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section class="reveal">
+    <div class="eyebrow">Research foundation</div>
+    <h2>The intent to recycle is there. The infrastructure to support it isn't.</h2>
+    <p style="margin-top:24px">Americans broadly support recycling — but the system consistently fails them through complexity, inconsistency, and a lack of feedback. These numbers show the size of the gap between intention and action.</p>
+
+    <div class="stats-grid">
+      <div class="stat-block">
+        <div class="pct">94<em>%</em></div>
+        <div class="src">The Recycling Partnership · National Survey</div>
+        <p>of Americans say they support recycling — yet only a fraction recycle correctly, revealing a massive gap between intent and informed action.</p>
+      </div>
+      <div class="stat-block">
+        <div class="pct">25<em>%</em></div>
+        <div class="src">Waste Management · Contamination Report</div>
+        <p>of materials placed in recycling bins are contaminated. One wrong item can render an entire batch unrecyclable, costing municipalities millions annually.</p>
+      </div>
+      <div class="stat-block">
+        <div class="pct">62<em>%</em></div>
+        <div class="src">Ipsos · Consumer Recycling Behavior Study</div>
+        <p>of consumers are confused about which plastics can be recycled — the single most cited barrier to participation across all demographic groups.</p>
+      </div>
+      <div class="stat-block">
+        <div class="pct">3<em>×</em></div>
+        <div class="src">Nielsen · Sustainability Incentives Research</div>
+        <p>more likely to adopt a sustainable behavior consistently when a reward or tangible incentive is attached — validating the points-based model at Recycloop's core.</p>
+      </div>
+    </div>
+
+    <img src="../images/recycloop/recycloop-solution.avif" alt="Recycloop solution overview" style="width:100%;height:auto;display:block;border-radius:4px;margin-top:48px;">
+  </section>
+
+  <!-- FEATURES -->
+  <section class="reveal">
+    <div class="eyebrow">Design</div>
+    <h2>Three systems that close the loop between intent and action.</h2>
+
+    <div class="features">
+
+      <!-- AI Sorting -->
+      <div class="feature">
+        <div class="body">
+          <span class="lbl">01 · AI sorting assistance</span>
+          <h3>Scan it. Know instantly.</h3>
+          <p>Image recognition identifies any item and tells users exactly whether it's recyclable at their location — eliminating the guesswork that causes contamination in the first place.</p>
+        </div>
+        <div class="preview" style="aspect-ratio:unset;background:none;">
+          <img src="../images/recycloop/recycloop-feature1.webp" alt="AI sorting feature" style="width:100%;height:auto;display:block;border-radius:4px;">
+        </div>
+      </div>
+
+      <!-- ChatBot -->
+      <div class="feature" style="flex-direction:row;align-items:center;gap:64px">
+        <div class="body" style="flex:1;min-width:0">
+          <span class="lbl">02 · ChatBot assistance</span>
+          <h3>When recycling isn't an option, repurpose.</h3>
+          <p>The AI assistant surfaces creative reuse suggestions for items that can't be recycled conventionally — shifting user mindset from disposal to circular thinking.</p>
+        </div>
+        <div class="preview" style="aspect-ratio:unset;background:none;flex:2;min-width:0">
+          <img src="../images/recycloop/recycloop-feature2.webp" alt="Recycloobot chatbot feature" style="width:100%;height:auto;display:block;border-radius:4px;">
+        </div>
+      </div>
+
+      <!-- Marketplace -->
+      <div class="feature">
+        <div class="body">
+          <span class="lbl">03 · Secondhand marketplace</span>
+          <h3>One person's waste is someone's resource.</h3>
+          <p>A B2B and C2C marketplace connects individuals with businesses and peers to buy and sell recycled materials — giving waste economic value and keeping materials in circulation longer.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div>
+            <img src="../images/recycloop/recycloop-feature3.webp" alt="B2B marketplace" style="width:100%;height:auto;display:block;border-radius:4px;">
+            <p style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-top:10px;max-width:none">B2B Marketplace</p>
+          </div>
+          <div>
+            <img src="../images/recycloop/recycloop-feature3b.webp" alt="C2C marketplace" style="width:75%;height:auto;display:block;border-radius:4px;">
+            <p style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-top:10px;max-width:none">C2C Marketplace</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LEARNINGS -->
+  <section class="reveal" style="border-bottom:none">
+    <div class="eyebrow">What I learned</div>
+    <h2>Embedding sustainability into daily life starts with removing friction.</h2>
+    <div class="learn">
+      <div class="col">
+        <p>This project came out of the University of Washington's 2024 Environmental Innovation Challenge. As the sole UX Designer, I directed the full creative vision — from designing the logo to crafting custom organic-feeling icons that aligned with Recycloop's ethos.</p>
+        <p>The most important realization: <em>people don't fail to recycle because they don't care</em> — they fail because the system punishes good intentions with confusion and zero feedback.</p>
+      </div>
+      <div class="col">
+        <p>Designing around behavior change rather than feature delivery shaped every decision. The rewards system, the AI scanner, and the marketplace aren't separate features — they form a single loop: scan, act, earn, repeat.</p>
+        <p>The next iteration would explore community-level impact dashboards — <em>neighborhood recycling leaderboards</em> that make collective progress as visible as individual effort.</p>
+      </div>
+    </div>
+
+    <div class="learn-list" style="margin-top:48px">
+      <div class="learn-item">
+        <span class="num">01</span>
+        <h3>Friction is the <em>real problem</em></h3>
+        <p>Every design decision was stress-tested against one question: does this add steps or remove them? The AI scanner exists precisely because looking up recycling rules is the step people skip.</p>
+      </div>
+      <div class="learn-item">
+        <span class="num">02</span>
+        <h3>Incentives change <em>habits</em></h3>
+        <p>Intrinsic motivation alone isn't enough for sustained behavior change. The points system provides the external loop that bridges intention and action until the habit forms on its own.</p>
+      </div>
+      <div class="learn-item">
+        <span class="num">03</span>
+        <h3>Branding as <em>trust</em></h3>
+        <p>Designing the logo and icon set wasn't decoration — it was a core UX decision. Organic, approachable visuals signal that this is a tool for everyone, not an environmental guilt machine.</p>
+      </div>
+      <div class="learn-item">
+        <span class="num">04</span>
+        <h3>Systems over <em>screens</em></h3>
+        <p>The three solutions — AI sorting, chatbot, marketplace — only work because they reinforce each other. Designing them as a connected system, not isolated features, was the hardest and most important call.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact">
+    <div>
+      <h2>bloom <em>where</em><br/>you're <em>planted!</em></h2>
+      <p class="contact-note"><strong>Sté is short for Steven</strong> — and it's a small wink at stay. It's the thread running through my work: design that invites people to stay engaged, art that holds attention, fragrances that linger long after the wearer leaves the room. Welcome. Sté with me a while.</p>
+    </div>
+    <a class="ascii-resume" href="#">
+      <img src="../assets/ascii-ste.png" alt="Sté — Resume" class="ascii-resume-img" />
+    </a>
+  </div>
+
+  <footer>
+    <div>® 2026 Steven Heng + iced americanos + Claude Code.</div>
+    <div>IN SEATTLE</div>
+  </footer>
+
+</div>
+
+<script>
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);}});
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.querySelectorAll('.feature').forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.setProperty('--reveal-delay', (i * 0.08) + 's');
+    io.observe(el);
+  });
+  document.querySelectorAll('.stat-block').forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.setProperty('--reveal-delay', (i * 0.07) + 's');
+    io.observe(el);
+  });
+  document.querySelectorAll('.learn-item').forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.setProperty('--reveal-delay', (i * 0.08) + 's');
+    io.observe(el);
+  });
+</script>
+<script>
+  (function(){
+    var html = document.documentElement;
+    document.getElementById('modeToggle').addEventListener('click', function(){
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+  })();
+</script>
+</body>
+</html>
