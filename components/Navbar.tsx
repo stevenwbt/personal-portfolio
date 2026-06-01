@@ -74,7 +74,7 @@ export default function Navbar({ pageLabel, isProjectPage = false }: NavbarProps
           <li><Link href={workHref}>Work</Link></li>
           <li><Link href={aboutHref}>About</Link></li>
           <li><Link href="/playground">Playground ↗</Link></li>
-          <li><a href="#">Resume ↗</a></li>
+          <li><a href="https://drive.google.com/file/d/1jC41JVrkb1hHOZMmS5-m0bhJ6h-NAB0U/view?usp=sharing" target="_blank" rel="noopener noreferrer">Resume ↗</a></li>
         </ol>
       </nav>
 
