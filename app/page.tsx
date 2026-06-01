@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
@@ -16,9 +16,20 @@ const TRAIL_PHOTOS = [
 ];
 const TINTS = ['#B62D07','#7C3AED','#E8630A','#009a5c','#4F6FD4','#0f766e','#002FA7'];
 
+const ABOUT_PHOTOS = [
+  { src: '/assets/aboutpage-photo.jpg',  w: 1322, h: 1536 },
+  { src: '/assets/aboutpage-photo2.jpg', w: 1271, h: 1537 },
+];
+
 export default function Home() {
   const trailRef = useRef<{ idx: number; lastT: number }>({ idx: 0, lastT: 0 });
   const scrollBarRef = useRef<HTMLDivElement>(null);
+  const [photoIdx, setPhotoIdx] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setPhotoIdx((i) => (i + 1) % ABOUT_PHOTOS.length), 5000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const bar = scrollBarRef.current;
@@ -47,11 +58,20 @@ export default function Home() {
       (entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); },
       { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
-    ['.section-head', '.project', '.about-grid > div'].forEach((sel) => {
+    ['.section-head', '.project', '.about-grid > div', '.fav-card', '.contact > *', 'footer'].forEach((sel) => {
       document.querySelectorAll(sel).forEach((el) => { el.classList.add('reveal'); io.observe(el); });
+    });
+    document.querySelectorAll('.project').forEach((el, i) => {
+      (el as HTMLElement).style.setProperty('--reveal-delay', (i * 0.07) + 's');
     });
     document.querySelectorAll('.about-grid > div').forEach((el, i) => {
       (el as HTMLElement).style.setProperty('--reveal-delay', (i * 0.12) + 's');
+    });
+    document.querySelectorAll('.fav-card').forEach((el, i) => {
+      (el as HTMLElement).style.setProperty('--reveal-delay', (i * 0.08) + 's');
+    });
+    document.querySelectorAll('.contact > *').forEach((el, i) => {
+      (el as HTMLElement).style.setProperty('--reveal-delay', (i * 0.1) + 's');
     });
 
     const introEl = document.querySelector('.intro') as HTMLElement | null;
@@ -170,7 +190,13 @@ export default function Home() {
               <p style={{ marginTop: 18 }}>Off-screen, I make fragrances, getting too invested in horrors/thrillers, on racket courts (badminton, tennis, pickle), or doing my best to sleep eight hours.</p>
             </div>
             <div>
-              <Image src="/assets/about-photo.jpg" alt="Steven Heng" width={1536} height={2048} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4, border: '1px solid var(--line)' }} />
+              <div style={{ position: 'relative', borderRadius: 4, border: '1px solid var(--line)', overflow: 'hidden' }}>
+                {ABOUT_PHOTOS.map((p, i) => (
+                  <Image key={p.src} src={p.src} alt="Steven Heng" width={p.w} height={p.h}
+                    style={{ width: '100%', height: 'auto', display: 'block', position: i === 0 ? 'relative' : 'absolute', inset: 0, opacity: photoIdx === i ? 1 : 0, transition: 'opacity 0.8s ease' }}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 

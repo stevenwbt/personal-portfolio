@@ -5,7 +5,7 @@ export default function Footer() {
     <>
       <div className="contact">
         <div>
-          <h2>bloom <em>where</em><br />you&apos;re <em>planted!</em></h2>
+          <h2>thanks for <em>sté-ing</em></h2>
           <p className="contact-note">
             <strong>Sté is short for Steven</strong> — and it&apos;s a small wink at stay. It&apos;s the thread running through my work: design that invites people to stay engaged, art that holds attention, fragrances that linger long after the wearer leaves the room. Welcome. Sté with me a while.
           </p>
