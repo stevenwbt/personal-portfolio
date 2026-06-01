@@ -141,7 +141,14 @@ nav.menu a:hover, .proj-header nav a:hover { color: var(--accent); background: v
 }
 .ph-right { gap: 12px; }
 .header-right .clock { font-variant-numeric: tabular-nums; color: var(--ink); }
-@media (max-width: 768px) { .header-right { display: none; } .site-header .header-logo-wrap { display: none; } }
+@media (max-width: 768px) {
+  .header-right { display: none; }
+  .site-header .header-logo-wrap { display: none; }
+  .project .hero-img::before, .project .hero-img::after { display: none; }
+  main { padding: 88px 12px 80px; }
+  .wrap { padding: 88px 12px 80px; }
+  footer div:last-child { display: none; }
+}
 
 /* ─── Dark mode toggle ──────────────────────────────────────────── */
 .mode-toggle {
