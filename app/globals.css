@@ -557,7 +557,7 @@ h1.pg-title em { font-family: var(--serif); font-style: italic; font-weight: 400
 .pg-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; align-items: start; }
 .pg-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 @media(max-width:1100px) { .pg-grid { grid-template-columns: 1fr 1fr; } }
-@media(max-width:768px) { .pg-grid { grid-template-columns: 1fr 1fr; } .pg-grid-3 { grid-template-columns: 1fr 1fr; } }
+@media(max-width:768px) { .pg-grid { grid-template-columns: 1fr 1fr; } .pg-grid-3 { grid-template-columns: 1fr; } }
 .pg-card { position: relative; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); overflow: hidden; display: flex; flex-direction: column; min-height: 360px; transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .25s; }
 .pg-card:hover { transform: translateY(-2px); border-color: var(--accent); }
 .pg-card .ph { flex: 1; position: relative; background: var(--bg-2); display: flex; align-items: center; justify-content: center; padding: 28px; }
