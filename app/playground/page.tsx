@@ -78,7 +78,7 @@ export default function Playground() {
             <span className="nm">· Graphic design</span>
             <span className="ct">Selected pieces</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, alignItems: 'start' }}>
+          <div className="pg-grid">
             {GRAPHIC_DESIGN.map((item, i) => (
               <div className="pg-card" key={i} style={{ minHeight: 'unset' }}>
                 {item.type === 'video' ? (
@@ -139,7 +139,7 @@ export default function Playground() {
             </div>
           </Link>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+          <div className="pg-grid-3">
             <PlaceholderCard lbl="fragrance 01" num="01" />
             <PlaceholderCard lbl="fragrance 02" num="02" />
             <PlaceholderCard lbl="fragrance 03" num="03" />
