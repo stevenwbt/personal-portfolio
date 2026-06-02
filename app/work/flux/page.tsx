@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer';
+import Lightbox from '../../../components/Lightbox';
 
 export default function Flux() {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); },
@@ -40,7 +43,8 @@ export default function Flux() {
             alt="FLUX — async productivity dashboard"
             width={1200}
             height={675}
-            style={{ marginTop: 48, width: '100%', display: 'block', borderRadius: 4, border: '1px solid var(--line)' }}
+            style={{ marginTop: 48, width: '100%', display: 'block', borderRadius: 4, border: '1px solid var(--line)', cursor: 'zoom-in' }}
+            onClick={() => setLightboxSrc('/images/flux/flux-thumbnail.png')}
           />
         </section>
 
@@ -124,7 +128,8 @@ export default function Flux() {
             alt="Competitive analysis matrix"
             width={1200}
             height={600}
-            style={{ marginTop: 40, width: '100%', display: 'block', borderRadius: 4, border: '1px solid var(--line)' }}
+            style={{ marginTop: 40, width: '100%', display: 'block', borderRadius: 4, border: '1px solid var(--line)', cursor: 'zoom-in' }}
+            onClick={() => setLightboxSrc('/images/flux/flux-competitiveanalysis.png')}
           />
 
           <div className="ccc">
@@ -212,6 +217,8 @@ export default function Flux() {
 
         <Footer />
       </div>
+
+      <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </>
   );
 }

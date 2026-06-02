@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer';
+import Lightbox from '../../../components/Lightbox';
 
 export default function Accordant() {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); },
@@ -40,7 +43,8 @@ export default function Accordant() {
             alt="Accordant — Search, understand, compare, choose, insert"
             width={1200}
             height={675}
-            style={{ marginTop: 48, width: '100%', display: 'block', borderRadius: 4 }}
+            style={{ marginTop: 48, width: '100%', display: 'block', borderRadius: 4, cursor: 'zoom-in' }}
+            onClick={() => setLightboxSrc('/images/accordant/accordant-title.png')}
           />
         </section>
 
@@ -85,16 +89,16 @@ export default function Accordant() {
 
               <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', gap: 24 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <Image src="/images/accordant/accordant-workflow1.png" alt="Today: 9 steps across 2 windows" width={1200} height={400} style={{ width: '100%', borderRadius: 4 }} />
+                  <Image src="/images/accordant/accordant-workflow1.png" alt="Today: 9 steps across 2 windows" width={1200} height={400} style={{ width: '100%', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/accordant/accordant-workflow1.png')} />
                   <span style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--ink-2)' }}>9 steps, 2 windows</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: '85%', marginTop: 48 }}>
                   <span style={{ fontFamily: 'var(--sans)', fontSize: 18, color: 'var(--ink-2)' }}>With Accordant</span>
-                  <Image src="/images/accordant/accordant-worfklow2.png" alt="With Accordant web platform" width={1200} height={400} style={{ width: '100%', borderRadius: 4 }} />
+                  <Image src="/images/accordant/accordant-worfklow2.png" alt="With Accordant web platform" width={1200} height={400} style={{ width: '100%', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/accordant/accordant-worfklow2.png')} />
                   <span style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent)' }}>3 less steps, with comprehensive understanding</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: '59%' }}>
-                  <Image src="/images/accordant/accordant-workflow3.png" alt="With Accordant plugin" width={900} height={400} style={{ width: '100%', borderRadius: 4 }} />
+                  <Image src="/images/accordant/accordant-workflow3.png" alt="With Accordant plugin" width={900} height={400} style={{ width: '100%', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/accordant/accordant-workflow3.png')} />
                   <span style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--accent)' }}>5 less steps</span>
                 </div>
               </div>
@@ -105,18 +109,18 @@ export default function Accordant() {
         {/* PROBLEM */}
         <section className="proj-section reveal">
           <div className="eyebrow">The problem space</div>
-          <h2 className="proj-h2" style={{ maxWidth: 'none', whiteSpace: 'nowrap' }}>Access is not the same as <em>understanding.</em></h2>
-          <p className="proj-p" style={{ marginTop: 24, color: 'var(--ink)', maxWidth: 'none' }}>Designers may have access to a Figma library and documentation site — yet still struggle to answer the simplest question of all: <em style={{ fontFamily: 'var(--display)', color: 'var(--ink)', fontStyle: 'normal', whiteSpace: 'nowrap' }}>which component should I use here?</em></p>
+          <h2 className="proj-h2" style={{ maxWidth: 'none' }}>Access is not the same as <em>understanding.</em></h2>
+          <p className="proj-p" style={{ marginTop: 24, color: 'var(--ink)', maxWidth: 'none' }}>Designers may have access to a Figma library and documentation site — yet still struggle to answer the simplest question of all: <em style={{ fontFamily: 'var(--display)', color: 'var(--ink)', fontStyle: 'normal' }}>which component should I use here?</em></p>
           <p className="proj-p" style={{ marginTop: 14 }}>They fall back on memory, scattered docs, or team knowledge. The gap is not access — it&apos;s <strong>informed access.</strong></p>
 
-          <div style={{ marginTop: 32, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+          <div className="two-col-mobile-stack" style={{ marginTop: 32, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
             <div>
               <h3 className="proj-h3">Questions they can&apos;t easily answer</h3>
-              <Image src="/images/accordant/accordant-questions.png" alt="Questions designers can't easily answer" width={600} height={400} style={{ marginTop: 16, width: '100%', height: 'auto', display: 'block', borderRadius: 4 }} />
+              <Image src="/images/accordant/accordant-questions.png" alt="Questions designers can't easily answer" width={600} height={400} style={{ marginTop: 16, width: '100%', height: 'auto', display: 'block', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/accordant/accordant-questions.png')} />
             </div>
             <div>
               <h3 className="proj-h3">What erodes when choosing is unclear</h3>
-              <Image src="/images/accordant/accordant-erodes.png" alt="What erodes when choosing is unclear" width={600} height={400} style={{ marginTop: 16, width: '100%', height: 'auto', display: 'block', borderRadius: 4 }} />
+              <Image src="/images/accordant/accordant-erodes.png" alt="What erodes when choosing is unclear" width={600} height={400} style={{ marginTop: 16, width: '100%', height: 'auto', display: 'block', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/accordant/accordant-erodes.png')} />
             </div>
           </div>
         </section>
@@ -124,7 +128,7 @@ export default function Accordant() {
         {/* RESEARCH */}
         <section className="proj-section reveal">
           <div className="eyebrow">Research</div>
-          <h2 className="proj-h2" style={{ whiteSpace: 'nowrap' }}>What designers <em>actually</em> struggle with.</h2>
+          <h2 className="proj-h2">What designers <em>actually</em> struggle with.</h2>
           <p className="proj-p" style={{ marginTop: 24 }}>I coded 14 practitioner accounts published 2023–2026 using inductive thematic coding (Braun &amp; Clarke). Eight recurring themes emerged.</p>
 
           <div className="themes">
@@ -229,7 +233,7 @@ export default function Accordant() {
                 <li>Learn principles &amp; onboarding</li>
                 <li>View detailed component guidance</li>
               </ul>
-              <Image src="/images/accordant/accordant-browse.png" alt="Accordant browse view" width={800} height={500} style={{ width: '100%', display: 'block', borderRadius: 4 }} />
+              <Image src="/images/accordant/accordant-browse.png" alt="Accordant browse view" width={800} height={500} style={{ width: '100%', display: 'block', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/accordant/accordant-browse.png')} />
             </div>
             <div className="surface">
               <span className="surface-label">B · Figma plugin — for fast in-context action</span>
@@ -240,7 +244,7 @@ export default function Accordant() {
                 <li>Insert the best-fit component</li>
               </ul>
               <div style={{ background: 'var(--bg-2)', border: '1px solid var(--line)', borderRadius: 4, padding: 24, overflow: 'hidden' }}>
-                <Image src="/images/accordant/accordant-plugin-preview.png" alt="Accordant Figma plugin" width={800} height={500} style={{ width: '100%', display: 'block', borderRadius: 4 }} />
+                <Image src="/images/accordant/accordant-plugin-preview.png" alt="Accordant Figma plugin" width={800} height={500} style={{ width: '100%', display: 'block', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/accordant/accordant-plugin-preview.png')} />
               </div>
             </div>
           </div>
@@ -272,7 +276,7 @@ export default function Accordant() {
         {/* HOW IT WORKS */}
         <section className="proj-section reveal">
           <div className="eyebrow">How Accordant works</div>
-          <h2 className="proj-h2" style={{ maxWidth: 'none', whiteSpace: 'nowrap' }}>Two surfaces. <em>Four</em> areas. One decision flow.</h2>
+          <h2 className="proj-h2" style={{ maxWidth: 'none' }}>Two surfaces. <em>Four</em> areas. One decision flow.</h2>
           <p className="proj-p" style={{ marginTop: 24 }}>The walkthrough below is set inside <em>Stex</em>, a fictional enterprise stack used as a working context for the prototype.</p>
 
           {/* Stex context card */}
@@ -290,7 +294,7 @@ export default function Accordant() {
               <div className="cc-meta">Fictional Company</div>
             </div>
             <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 48, alignItems: 'start' }}>
-              <Image src="/images/accordant/accordant-stex.png" alt="Stex" width={400} height={200} style={{ width: '75%', borderRadius: 8, display: 'block' }} />
+              <Image src="/images/accordant/accordant-stex.png" alt="Stex" width={400} height={200} style={{ width: '75%', borderRadius: 8, display: 'block', cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/accordant/accordant-stex.png')} />
               <ul style={{ fontSize: 18 }}>
                 <li>Multiple enterprise products in active development</li>
                 <li>Internal tools and customer-facing workflows</li>
@@ -349,7 +353,7 @@ export default function Accordant() {
         {/* REFLECTION */}
         <section className="proj-section reveal" style={{ borderBottom: 'none' }}>
           <div className="eyebrow">Reflection</div>
-          <h2 className="proj-h2" style={{ maxWidth: 'none', whiteSpace: 'nowrap' }}>The <em>library</em> isn&apos;t the product. The decision is.</h2>
+          <h2 className="proj-h2" style={{ maxWidth: 'none' }}>The <em>library</em> isn&apos;t the product. The decision is.</h2>
           <div className="two-col">
             <p className="proj-p">Designers don&apos;t lack access — they lack a structural surface for the decision they&apos;re already making. Accordant treats <em>comparison</em> as the primary view, not an afterthought, and meets the work where it actually happens: inside Figma.</p>
             <p className="proj-p">If Figma libraries make components <em>accessible</em>, Accordant&apos;s job is to make them <em>understandable</em> — and to teach by use, not by document.</p>
@@ -361,12 +365,15 @@ export default function Accordant() {
             alt="Future steps"
             width={1200}
             height={600}
-            style={{ marginTop: 16, width: '100%', display: 'block', borderRadius: 4 }}
+            style={{ marginTop: 16, width: '100%', display: 'block', borderRadius: 4, cursor: 'zoom-in' }}
+            onClick={() => setLightboxSrc('/images/accordant/accordant-next-steps.png')}
           />
         </section>
 
         <Footer />
       </div>
+
+      <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </>
   );
 }

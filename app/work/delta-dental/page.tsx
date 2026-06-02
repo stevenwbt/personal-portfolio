@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer';
+import Lightbox from '../../../components/Lightbox';
 
 export default function DeltaDental() {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); },
@@ -47,7 +50,8 @@ export default function DeltaDental() {
             alt="Delta Dental — internship workspace"
             width={1200}
             height={675}
-            style={{ marginTop: 48, width: '100%', display: 'block', borderRadius: 4, border: '1px solid var(--line)' }}
+            style={{ marginTop: 48, width: '100%', display: 'block', borderRadius: 4, border: '1px solid var(--line)', cursor: 'zoom-in' }}
+            onClick={() => setLightboxSrc('/images/delta dental/deltadental-thumbnail.png')}
           />
         </section>
 
@@ -158,7 +162,7 @@ export default function DeltaDental() {
         {/* ACTION */}
         <section className="proj-section reveal">
           <div className="eyebrow">Action</div>
-          <h2 className="proj-h2" style={{ maxWidth: 'none', whiteSpace: 'nowrap' }}>Five phases from <em>research</em> to handoff.</h2>
+          <h2 className="proj-h2" style={{ maxWidth: 'none' }}>Five phases from <em>research</em> to handoff.</h2>
           <p className="proj-p" style={{ marginTop: 24 }}>With the UX researcher on leave, the process required some improvisation — particularly during discovery. Each phase built directly on the last.</p>
 
           <div className="flow">
@@ -201,7 +205,8 @@ export default function DeltaDental() {
                   alt="Delta Dental — summer 2025"
                   width={800}
                   height={500}
-                  style={{ width: '100%', display: 'block' }}
+                  style={{ width: '100%', display: 'block', cursor: 'zoom-in' }}
+                  onClick={() => setLightboxSrc('/images/delta dental/deltadental-pic2.jpg')}
                 />
                 <div className="team-hover-overlay">Digital Platform Team!</div>
               </div>
@@ -211,6 +216,8 @@ export default function DeltaDental() {
 
         <Footer />
       </div>
+
+      <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </>
   );
 }

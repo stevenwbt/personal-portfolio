@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer';
+import Lightbox from '../../../components/Lightbox';
 
 export default function CosmicDrift() {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); },
@@ -137,7 +140,8 @@ export default function CosmicDrift() {
             alt="Competitive analysis — Google Photos and Facebook Memories"
             width={1200}
             height={600}
-            style={{ width: '100%', height: 'auto', borderRadius: 4, marginTop: 48, display: 'block' }}
+            style={{ width: '100%', height: 'auto', borderRadius: 4, marginTop: 48, display: 'block', cursor: 'zoom-in' }}
+            onClick={() => setLightboxSrc('/images/spotify/spotify-competitive.webp')}
           />
         </section>
 
@@ -200,6 +204,8 @@ export default function CosmicDrift() {
 
         <Footer />
       </div>
+
+      <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </>
   );
 }

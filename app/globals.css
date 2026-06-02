@@ -144,9 +144,9 @@ nav.menu a:hover, .proj-header nav a:hover { color: var(--accent); background: v
 @media (max-width: 768px) {
   .header-right { display: none; }
   .site-header .header-logo-wrap { display: none; }
+  .ph-logo { display: none; }
+  .ph-right { display: none; }
   .project .hero-img::before, .project .hero-img::after { display: none; }
-  main { padding: 88px 12px 80px; }
-  .wrap { padding: 88px 12px 80px; }
   footer div:last-child { display: none; }
 }
 
@@ -176,6 +176,8 @@ html.dark .mt-knob { transform: translateX(14px); background: var(--accent); }
 .shell { position: relative; z-index: 1; display: block; min-height: 100vh; }
 main { padding: 88px 64px 80px; }
 .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 88px 56px 80px; }
+@media (max-width: 768px) { main { padding: 88px 12px 80px; } .wrap { padding: 88px 12px 80px; } }
+@media (max-width: 768px) { .two-col-mobile-stack { grid-template-columns: 1fr !important; } }
 
 /* ─── Scroll reveal ─────────────────────────────────────────────── */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.8,.2,1); transition-delay: var(--reveal-delay, 0s); }

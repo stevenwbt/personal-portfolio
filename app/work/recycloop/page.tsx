@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer';
+import Lightbox from '../../../components/Lightbox';
 
 export default function Recycloop() {
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); },
@@ -133,7 +136,8 @@ export default function Recycloop() {
             alt="Recycloop solution overview"
             width={1200}
             height={600}
-            style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4, marginTop: 48 }}
+            style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4, marginTop: 48, cursor: 'zoom-in' }}
+            onClick={() => setLightboxSrc('/images/recycloop/recycloop-solution.avif')}
           />
         </section>
 
@@ -151,7 +155,7 @@ export default function Recycloop() {
                 <p className="proj-p" style={{ fontSize: 14 }}>Image recognition identifies any item and tells users exactly whether it&apos;s recyclable at their location — eliminating the guesswork that causes contamination in the first place.</p>
               </div>
               <div className="rl-img">
-                <Image src="/images/recycloop/recycloop-feature1.webp" alt="AI sorting feature" width={1200} height={600} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4 }} />
+                <Image src="/images/recycloop/recycloop-feature1.webp" alt="AI sorting feature" width={1200} height={600} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/recycloop/recycloop-feature1.webp')} />
               </div>
             </div>
 
@@ -163,7 +167,7 @@ export default function Recycloop() {
                 <p className="proj-p" style={{ fontSize: 14 }}>The AI assistant surfaces creative reuse suggestions for items that can&apos;t be recycled conventionally — shifting user mindset from disposal to circular thinking.</p>
               </div>
               <div style={{ flex: 2, minWidth: 0 }}>
-                <Image src="/images/recycloop/recycloop-feature2.webp" alt="Recycloobot chatbot feature" width={800} height={500} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4 }} />
+                <Image src="/images/recycloop/recycloop-feature2.webp" alt="Recycloobot chatbot feature" width={800} height={500} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/recycloop/recycloop-feature2.webp')} />
               </div>
             </div>
 
@@ -176,11 +180,11 @@ export default function Recycloop() {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                 <div>
-                  <Image src="/images/recycloop/recycloop-feature3.webp" alt="B2B marketplace" width={1200} height={600} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4 }} />
+                  <Image src="/images/recycloop/recycloop-feature3.webp" alt="B2B marketplace" width={1200} height={600} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/recycloop/recycloop-feature3.webp')} />
                   <p style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--ink-2)', marginTop: 10, maxWidth: 'none' }}>B2B Marketplace</p>
                 </div>
                 <div>
-                  <Image src="/images/recycloop/recycloop-feature3b.webp" alt="C2C marketplace" width={900} height={500} style={{ width: '75%', height: 'auto', display: 'block', borderRadius: 4 }} />
+                  <Image src="/images/recycloop/recycloop-feature3b.webp" alt="C2C marketplace" width={900} height={500} style={{ width: '75%', height: 'auto', display: 'block', borderRadius: 4, cursor: 'zoom-in' }} onClick={() => setLightboxSrc('/images/recycloop/recycloop-feature3b.webp')} />
                   <p style={{ fontFamily: 'var(--mono)', fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--ink-2)', marginTop: 10, maxWidth: 'none' }}>C2C Marketplace</p>
                 </div>
               </div>
@@ -221,6 +225,8 @@ export default function Recycloop() {
 
         <Footer />
       </div>
+
+      <Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </>
   );
 }
