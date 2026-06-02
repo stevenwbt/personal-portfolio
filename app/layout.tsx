@@ -2,8 +2,20 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Steven Heng — Portfolio',
-  description: 'Product designer, amateur perfumer, and cognitive explorer.',
+  title: 'Steven Heng | Portfolio',
+  description: 'Product designer based in Seattle. I craft digital experiences and, occasionally, things you can smell.',
+  openGraph: {
+    title: 'Steven Heng | Portfolio',
+    description: 'Product designer based in Seattle. I craft digital experiences and, occasionally, things you can smell.',
+    url: 'https://stewithme.com',
+    siteName: 'Steven Heng',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Steven Heng | Portfolio',
+    description: 'Product designer based in Seattle. I craft digital experiences and, occasionally, things you can smell.',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
